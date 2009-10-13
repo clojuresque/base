@@ -1,0 +1,25 @@
+usePlugin 'java'
+usePlugin 'groovy'
+
+version = '1.0.0'
+
+def gradle_home = new File(System.getenv()['GRADLE_HOME'])
+def gradle_lib = new File(gradle_home, "lib")
+
+repositories {
+    flatDir name: 'lib', dirs: 'lib'
+    flatDir name: 'gradle', dirs: gradle_lib
+}
+
+dependencies {
+    compile name: 'clojure', version: '1.0.0'
+
+    groovy name: 'groovy', version: '1.6.4'
+    groovy name: 'gradle-core', version: '0.8'
+    groovy name: 'asm-all', version: '2.2.3'
+    groovy name: 'slf4j-api', version:'1.5.3'
+    groovy name: 'logback-core', version:'0.9.9'
+    groovy name: 'logback-classic', version:'0.9.9'
+    groovy name: 'antlr', version:'2.7.7'
+    groovy name: 'ant', version:'1.7.0'
+}
