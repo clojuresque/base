@@ -33,9 +33,14 @@ import org.apache.tools.ant.taskdefs.Java
 import org.apache.tools.ant.types.Environment
 import org.apache.tools.ant.types.Path
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import java.io.File
 
 public class ClojureCompileTask extends SourceTask {
+    private static Logger logger = LoggerFactory.getLogger(ClojureCompileTask)
+
     private File sourceDir
     private File destinationDir
     private FileCollection classpath
@@ -52,31 +57,42 @@ public class ClojureCompileTask extends SourceTask {
 
     private void initialise() {
         def action = [ execute: { ClojureCompileTask task ->
-            FileTree source = task.source
+            String sourceDir = task.sourceDir.path
             File destDir = task.destinationDir
-            Project project = task.project.ant.project
-            String cp = task.classpath.getAsPath()
-            Java java = new Java()
+            FileTree source = task.source
+            FileCollection cp = task.classpath
 
-            Path path = new Path(project)
-            path.append(new Path(project, task.sourceDir.path))
-            path.append(new Path(project, destDir.path))
-            path.append(new Path(project, cp))
+            Map args = [
+                classname:    'de.kotka.gradle.ClojureCompile',
+                failOnError:  true,
+                fork:         true,
+                classpathref: 'compile.classpath'
+            ]
 
-            java.project = project
-            java.classpath = path
-            java.classname = "de.kotka.gradle.ClojureCompile"
-            task.addProperty(java, "clojure.compile.path", destDir)
-            task.addProperty(java, "clojure.compile.warn-on-reflection",
-                "false")
-            java.fork = true
+            ant.path(id: 'compile.classpath') {
+                logger.debug("Add {} (source dir) to Ant classpath!", sourceDir)
+                pathelement(location: sourceDir)
 
-            source.each {
-                task.addCommandLineArgument(java, it)
+                logger.debug("Add {} (dest dir) to Ant classpath!",
+                    destDir.path)
+                pathelement(location: destDir.path)
+
+                cp.each {
+                    logger.debug("Add {} to Ant classpath!", it)
+                    pathelement(location: it)
+                }
             }
 
             destDir.mkdirs()
-            java.execute()
+
+            ant.java(args) {
+                sysproperty(key: "clojure.compile.path", value: destDir)
+                sysproperty(key: "clojure.compile.warn-on-reflection",
+                    value: "false")
+                source.each {
+                    arg(value: it)
+                }
+            }
         } ] as Action
 
         this.doLast(action)

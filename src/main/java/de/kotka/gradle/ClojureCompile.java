@@ -65,7 +65,7 @@ public class ClojureCompile {
         return s.next().first();
     }
 
-    public static void main(String[] files) {
+    public static void main(String[] files) throws Exception {
         String compilePath = System.getProperty(COMPILE_PATH_PROP);
         boolean warnOnReflection =
             System.getProperty(WARN_ON_REFLECTION_PROP).equals("true");
@@ -91,8 +91,6 @@ public class ClojureCompile {
                     if (ns != null && !seen.contains(ns))
                         compile.invoke(ns);
                     seen = (IPersistentSet)seen.cons(ns);
-                } catch(Exception e) {
-                    e.printStackTrace();
                 } finally {
                     rdr.close();
                 }
