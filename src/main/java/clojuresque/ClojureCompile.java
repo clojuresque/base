@@ -95,8 +95,6 @@ public class ClojureCompile {
                     rdr.close();
                 }
             }
-        } catch(IOException e) {
-            e.printStackTrace();
         } finally {
             Var.popThreadBindings();
         }
