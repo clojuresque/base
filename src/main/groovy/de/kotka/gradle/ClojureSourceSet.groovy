@@ -28,8 +28,12 @@ import org.gradle.api.file.FileTree
 
 import groovy.lang.Closure
 
+import java.io.File
+import java.util.Set
+
 public interface ClojureSourceSet {
     public SourceDirectorySet getClojure()
     public ClojureSourceSet clojure(Closure closure)
     public FileTree getAllClojure()
+    public Set<File> getSrcDirs()
 }

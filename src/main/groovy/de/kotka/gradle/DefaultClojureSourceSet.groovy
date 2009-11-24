@@ -33,6 +33,9 @@ import org.gradle.util.ConfigureUtil
 
 import groovy.lang.Closure
 
+import java.io.File
+import java.util.Set
+
 public class DefaultClojureSourceSet implements ClojureSourceSet {
     private DefaultSourceDirectorySet clojure
     private PatternSet clojurePatterns
@@ -62,5 +65,9 @@ public class DefaultClojureSourceSet implements ClojureSourceSet {
 
     public FileTree getAllClojure() {
         return allClojure
+    }
+
+    public Set<File> getSrcDirs() {
+        return clojure.srcDirs
     }
 }
