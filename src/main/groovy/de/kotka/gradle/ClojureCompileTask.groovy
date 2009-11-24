@@ -37,11 +37,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.io.File
+import java.util.Set
 
 public class ClojureCompileTask extends SourceTask {
     private static Logger logger = LoggerFactory.getLogger(ClojureCompileTask)
 
-    private File sourceDir
+    private ClojureSourceSet sourceSet
     private File destinationDir
     private FileCollection classpath
 
@@ -57,7 +58,7 @@ public class ClojureCompileTask extends SourceTask {
 
     private void initialise() {
         def action = [ execute: { ClojureCompileTask task ->
-            String sourceDir = task.sourceDir.path
+            Set<File> sourceDirs = task.sourceSet.srcDirs
             File destDir = task.destinationDir
             FileTree source = task.source
             FileCollection cp = task.classpath
@@ -70,8 +71,10 @@ public class ClojureCompileTask extends SourceTask {
             ]
 
             ant.path(id: 'compile.classpath') {
-                logger.debug("Add {} (source dir) to Ant classpath!", sourceDir)
-                pathelement(location: sourceDir)
+                sourceDirs.each {
+                    logger.debug("Add {} (source dir) to Ant classpath!", it)
+                    pathelement(location: it)
+                }
 
                 logger.debug("Add {} (dest dir) to Ant classpath!",
                     destDir.path)
@@ -98,12 +101,12 @@ public class ClojureCompileTask extends SourceTask {
         this.doLast(action)
     }
 
-    public File getSourceDir() {
-        return sourceDir
+    public ClojureSourceSet getSourceSet() {
+        return sourceSet
     }
 
-    public void setSourceDir(File dir) {
-        sourceDir = dir
+    public void setSourceSet(ClojureSourceSet set) {
+        sourceSet = set
     }
 
     public File getDestinationDir() {

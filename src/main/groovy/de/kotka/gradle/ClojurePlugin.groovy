@@ -88,7 +88,7 @@ public class ClojurePlugin implements Plugin {
         String compileTaskName = sourceSet.getCompileTaskName("clojure")
         ClojureCompileTask task = project.tasks.add(compileTaskName,
                 ClojureCompileTask.class)
-        task.setSourceDir(new File(srcDir))
+        task.sourceSet = clojureSourceSet
         task.dependsOn(sourceSet.getCompileTaskName("java"))
         task.setDescription(String.format("Compile the %s Clojure source.",
                 sourceSet.name))
