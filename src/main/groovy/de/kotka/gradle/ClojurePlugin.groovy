@@ -80,7 +80,7 @@ public class ClojurePlugin implements Plugin {
         DefaultClojureSourceSet clojureSourceSet =
             new DefaultClojureSourceSet(sourceSet.displayName,
                 projectInternal.fileResolver)
-        sourceSet.convention.plugins.put("clojure", clojureSourceSet)
+        sourceSet.convention.plugins["clojure"] = clojureSourceSet
         clojureSourceSet.clojure.srcDir(srcDir)
         sourceSet.resources.filter.exclude("**/*.clj")
         sourceSet.allSource.add(clojureSourceSet.clojure)
@@ -89,8 +89,8 @@ public class ClojurePlugin implements Plugin {
         ClojureCompileTask task = project.tasks.add(compileTaskName,
                 ClojureCompileTask.class)
         task.sourceSet = clojureSourceSet
-        task.setDescription(String.format("Compile the %s Clojure source.",
-                sourceSet.name))
+        task.description = String.format("Compile the %s Clojure source.",
+                sourceSet.name)
 
         ConventionMapping convMap = task.conventionMapping
 
