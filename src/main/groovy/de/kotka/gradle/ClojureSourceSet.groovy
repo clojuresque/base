@@ -36,4 +36,6 @@ public interface ClojureSourceSet {
     public ClojureSourceSet clojure(Closure closure)
     public FileTree getAllClojure()
     public Set<File> getSrcDirs()
+    public boolean getWarnOnReflection()
+    public void setWarnOnReflection(boolean flag)
 }

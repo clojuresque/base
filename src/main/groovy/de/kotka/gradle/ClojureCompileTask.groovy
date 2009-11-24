@@ -58,6 +58,7 @@ public class ClojureCompileTask extends SourceTask {
 
     private void initialise() {
         def action = [ execute: { ClojureCompileTask task ->
+            boolean warnOnReflection = task.sourceSet.warnOnReflection
             Set<File> sourceDirs = task.sourceSet.srcDirs
             File destDir = task.destinationDir
             FileTree source = task.source
@@ -91,7 +92,7 @@ public class ClojureCompileTask extends SourceTask {
             ant.java(args) {
                 sysproperty(key: "clojure.compile.path", value: destDir)
                 sysproperty(key: "clojure.compile.warn-on-reflection",
-                    value: "false")
+                    value: warnOnReflection)
                 source.each {
                     arg(value: it)
                 }
