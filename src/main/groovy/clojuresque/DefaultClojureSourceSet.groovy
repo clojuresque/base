@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package de.kotka.gradle
+package clojuresque
 
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.SourceSet

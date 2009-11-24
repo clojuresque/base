@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package de.kotka.gradle
+package clojuresque
 
 import org.gradle.api.Action
 import org.gradle.api.Plugin

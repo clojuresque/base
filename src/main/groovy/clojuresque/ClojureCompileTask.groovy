@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package de.kotka.gradle
+package clojuresque
 
 import org.gradle.api.Action
 import org.gradle.api.file.FileCollection
@@ -65,7 +65,7 @@ public class ClojureCompileTask extends SourceTask {
             FileCollection cp = task.classpath
 
             Map args = [
-                classname:    'de.kotka.gradle.ClojureCompile',
+                classname:    'clojuresque.ClojureCompile',
                 failOnError:  true,
                 fork:         true,
                 classpathref: 'compile.classpath'

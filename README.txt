@@ -1,4 +1,4 @@
-# clj-gradle – a Clojure plugin for Gradle
+# clojuresque – a Clojure plugin for Gradle
 
 ## What is Gradle?
 
@@ -13,9 +13,9 @@ in form of different plugins. Each plugin defines certain conventions which
 (if followed) automasie 95% of the build completely. Still the conventions
 are freely configurable to be adapted to different project structures.
 
-## What is clj-gradle?
+## What is clojuresque?
 
-[clj-gradle][cg] is now a plugin for [Gradle][], which adds [Clojure][clj]
+[clojuresque][cg] is now a plugin for [Gradle][], which adds [Clojure][clj]
 support. It allows compilation with automatic namespace recognition. The
 plugin is based on the Java plugin and hooks into the standard configurations
 and archives.
@@ -37,7 +37,7 @@ the [Clojure][] jar must be available also to the Java portion of the project.
 ## Getting started
 
 Create a sandbox directory. Add a subdirectory `lib` and put the `clojure.jar`
-as well as the `clj-gradle.jar` there. Create some test namespace in
+as well as the `clojuresque.jar` there. Create some test namespace in
 `src/main/clojure/test/example.clj`:
 
     (ns test.example
@@ -54,7 +54,7 @@ Now create the `build.gradle` script:
             flatDir name: 'lib', dirs: 'lib'
         }
         dependencies {
-            classpath name: 'clj-gradle'
+            classpath name: 'clojuresque'
         }
     }
     
@@ -66,14 +66,14 @@ Now create the `build.gradle` script:
     
     configurations {
         compileOnly {
-            setVisible(false)
-            setTransitive(false)
+            visible = false
+            transitive = false
         }
         compile.extendsFrom(compileOnly)
     }
     
     dependencies {
-        compileOnly name: 'clj-gradle'
+        compileOnly name: 'clojuresque'
         compile name: 'clojure'
     }
 
@@ -83,7 +83,7 @@ This is necessary, since the we need the plugin already to define the build
 logic itself.
 
 Next we define the repositories and dependencies for the project being
-build. Since we need the `ClojureCompile` class from the `clj-gradle.jar`
+build. Since we need the `ClojureCompile` class from the `clojuresque.jar`
 in the classpath for compilation we introduce a special `compileOnly`
 configuration. It's private the finally deployed archives of the project
 won't depend on it at runtime. Additionally we add a dependency on the
@@ -105,9 +105,9 @@ bugtracker at [bitbucket in the 'Issues' tab][cg].
 
 -- 
 Meikel Brandmeyer <mb@kotka.de>
-Frankfurt am Main, October 2009
+Frankfurt am Main, November 2009
 
 [Gradle]: http://www.gradle.org
 [Groovy]: http://groovy.codehaus.org
 [clj]:    http://clojure.org
-[cg]:     http://bitbucket.org/kotarak/clj-gradle
+[cg]:     http://bitbucket.org/kotarak/clojuresque

@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package de.kotka.gradle;
+package clojuresque;
 
 import clojure.lang.ISeq;
 import clojure.lang.IPersistentMap;
