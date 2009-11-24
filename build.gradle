@@ -3,7 +3,7 @@ usePlugin 'groovy'
 usePlugin 'maven'
 
 group = 'clojuresque'
-version = '1.0.0'
+version = '1.1.0'
 
 def gradle_home = new File(System.getenv()['GRADLE_HOME'])
 def gradle_lib = new File(gradle_home, "lib")
