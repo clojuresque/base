@@ -5,16 +5,13 @@ usePlugin 'maven'
 group = 'clojuresque'
 version = '1.2.0-SNAPSHOT'
 
-def gradle_home = new File(System.getenv()['GRADLE_HOME'])
-def gradle_lib = new File(gradle_home, "lib")
-
 repositories {
+    flatDir name: 'gradle', dirs: new File(System.getenv('GRADLE_HOME') + '/lib')
     mavenCentral()
-    flatDir name: 'gradle', dirs: gradle_lib
 }
 
 dependencies {
-    compile 'org.clojure:clojure:1.0.0'
+    groovy 'org.clojure:clojure:1.0.0'
 
     groovy name: 'groovy', version: '1.6.4'
     groovy name: 'gradle-core', version: '0.8'
