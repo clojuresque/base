@@ -43,6 +43,7 @@ public class ClojurePlugin implements Plugin {
         JavaPlugin javaPlugin = handler.usePlugin(JavaPlugin.class, project)
         configureCompileDefaults(project)
         configureSourceSetDefaults(project, javaPlugin)
+        configureConfigurations(project)
     }
 
     private JavaPluginConvention javaConvention(Convention convention) {
@@ -120,6 +121,19 @@ public class ClojurePlugin implements Plugin {
 
         project.convention.getPlugin(JavaPluginConvention.class)
             .sourceSets.allObjects(action)
+    }
+
+    private void configureConfigurations(Project project) {
+        project.configurations {
+            clojuresque {
+                transitive = false
+                visible = false
+                description = "Dependency on the Clojuresque compiler"
+            }
+        }
+        project.dependencies {
+            clojuresque 'clojuresque:clojuresque:1.2.0-SNAPSHOT'
+        }
     }
 }
 
