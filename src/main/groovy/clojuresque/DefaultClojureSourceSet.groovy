@@ -40,7 +40,6 @@ public class DefaultClojureSourceSet implements ClojureSourceSet {
     private DefaultSourceDirectorySet clojure
     private PatternSet clojurePatterns
     private UnionFileTree allClojure
-    private boolean warnOnReflection
 
     public DefaultClojureSourceSet(String displayName,
             FileResolver fileResolver) {
@@ -53,8 +52,6 @@ public class DefaultClojureSourceSet implements ClojureSourceSet {
         clojurePatterns.include("**/*.clj")
 
         allClojure = new UnionFileTree(desc, clojure.matching(clojurePatterns))
-
-        warnOnReflection = false
     }
 
     public DefaultSourceDirectorySet getClojure() {
@@ -72,13 +69,5 @@ public class DefaultClojureSourceSet implements ClojureSourceSet {
 
     public Set<File> getSrcDirs() {
         return clojure.srcDirs
-    }
-
-    public boolean getWarnOnReflection() {
-        return warnOnReflection
-    }
-
-    public void setWarnOnReflection(boolean flag) {
-        warnOnReflection = flag
     }
 }

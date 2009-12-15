@@ -23,17 +23,22 @@
 
 package clojuresque
 
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.file.FileTree
+import org.gradle.api.Project
 
-import groovy.lang.Closure
+class ClojurePluginConvention {
+    Project project
+    boolean warnOnReflection
 
-import java.io.File
-import java.util.Set
+    public ClojurePluginConvention(Project project) {
+        this.project = project
+        this.warnOnReflection = false
+    }
 
-public interface ClojureSourceSet {
-    public SourceDirectorySet getClojure()
-    public ClojureSourceSet clojure(Closure closure)
-    public FileTree getAllClojure()
-    public Set<File> getSrcDirs()
+    public boolean getWarnOnReflection() {
+        return this.warnOnReflection
+    }
+
+    public void setWarnOnReflection(boolean flag) {
+        this.warnOnReflection = flag
+    }
 }

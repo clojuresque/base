@@ -41,6 +41,10 @@ import org.gradle.api.tasks.ConventionValue
 public class ClojurePlugin implements Plugin {
     public void use(Project project, ProjectPluginsContainer handler) {
         JavaPlugin javaPlugin = handler.usePlugin(JavaPlugin.class, project)
+
+        project.convention.plugins["clojure"] =
+            new ClojurePluginConvention(project)
+
         configureCompileDefaults(project)
         configureSourceSetDefaults(project, javaPlugin)
         configureConfigurations(project)
