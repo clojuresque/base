@@ -34,6 +34,14 @@ class ClojurePluginConvention {
         this.warnOnReflection = false
     }
 
+    public void clojureSnapshotsRepo() {
+        project.repositories.mavenRepo name: 'clojureHudson', urls: 'http://build.clojure.org/snapshots'
+    }
+
+    public void clojarsRepo() {
+        project.repositories.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
+    }
+
     public boolean getWarnOnReflection() {
         return this.warnOnReflection
     }
