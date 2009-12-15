@@ -28,10 +28,12 @@ import org.gradle.api.Project
 class ClojurePluginConvention {
     Project project
     boolean warnOnReflection
+    boolean aotCompile
 
     public ClojurePluginConvention(Project project) {
         this.project = project
         this.warnOnReflection = false
+        this.aotCompile = false
     }
 
     public void clojureSnapshotsRepo() {
@@ -48,5 +50,13 @@ class ClojurePluginConvention {
 
     public void setWarnOnReflection(boolean flag) {
         this.warnOnReflection = flag
+    }
+
+    public boolean getAotCompile() {
+        return this.aotCompile
+    }
+
+    public void setAotCompile(boolean flag) {
+        this.aotCompile = flag
     }
 }

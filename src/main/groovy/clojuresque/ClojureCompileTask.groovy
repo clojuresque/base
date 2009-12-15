@@ -58,6 +58,10 @@ public class ClojureCompileTask extends SourceTask {
 
     private void initialise() {
         def action = [ execute: { ClojureCompileTask task ->
+            if (!task.project.aotCompile) {
+                return
+            }
+
             boolean warnOnReflection = task.project.warnOnReflection
             Set<File> sourceDirs = task.sourceSet.srcDirs
             File destDir = task.destinationDir

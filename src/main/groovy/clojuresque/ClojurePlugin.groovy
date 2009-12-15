@@ -37,6 +37,7 @@ import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.ProjectPluginsContainer
 import org.gradle.api.tasks.ConventionValue
+import org.gradle.api.tasks.bundling.Jar
 
 public class ClojurePlugin implements Plugin {
     public void use(Project project, ProjectPluginsContainer handler) {
@@ -48,6 +49,7 @@ public class ClojurePlugin implements Plugin {
         configureCompileDefaults(project)
         configureSourceSetDefaults(project, javaPlugin)
         configureConfigurations(project)
+        configureArchives(project)
     }
 
     private JavaPluginConvention javaConvention(Convention convention) {
@@ -138,6 +140,16 @@ public class ClojurePlugin implements Plugin {
         project.dependencies {
             clojuresque 'clojuresque:clojuresque:1.2.0-SNAPSHOT'
         }
+    }
+
+    private void configureArchives(Project project) {
+        def action = [ execute: { Jar task ->
+            if (!task.project.aotCompile) {
+                task.from task.project.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].clojure
+            }
+        } ] as Action
+
+        project.tasks[JavaPlugin.JAR_TASK_NAME].doFirst(action)
     }
 }
 
