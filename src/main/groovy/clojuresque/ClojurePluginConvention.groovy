@@ -24,6 +24,7 @@
 package clojuresque
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 
 class ClojurePluginConvention {
     Project project
@@ -36,12 +37,13 @@ class ClojurePluginConvention {
         this.aotCompile = false
     }
 
-    public void clojureSnapshotsRepo() {
-        project.repositories.mavenRepo name: 'clojureHudson', urls: 'http://build.clojure.org/snapshots'
+    public void clojureSnapshotsRepo(RepositoryHandler repos) {
+        repos.mavenRepo name: 'clojureHudson', urls: 'http://build.clojure.org/snapshots'
     }
 
-    public void clojarsRepo() {
-        project.repositories.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
+    public void clojarsRepo(RepositoryHandler repos) {
+        repos.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
+    }
     }
 
     public boolean getWarnOnReflection() {
