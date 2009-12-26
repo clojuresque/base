@@ -31,6 +31,8 @@ class ClojurePluginConvention {
     boolean warnOnReflection
     boolean aotCompile
 
+    private boolean didConfigureDeployerJars = false
+
     public ClojurePluginConvention(Project project) {
         this.project = project
         this.warnOnReflection = false
@@ -49,6 +51,24 @@ class ClojurePluginConvention {
         String home = System.getenv('GRADLE_HOME')
         if (home != null) {
             repos.flatDir name: 'gradleHome', dirs: new File(home + '/lib')
+        }
+    }
+
+    private void configureDeployerJars() {
+        if (!didConfigureDeployerJars) {
+            project.configurations {
+                clojarsDeployerJars {
+                    visible = false
+                    description = 'Private configuration to hold ssh wagon dependencies'
+                }
+            }
+            project.dependencies {
+                clojarsDeployerJars 'org.apache.ant:ant-jsch:1.7.0'
+            }
+
+            project.ant.taskdef name: 'clojarsScpDeploy', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: project.configurations.clojarsDeployerJars.asPath
+
+            didConfigureDeployerJars = true
         }
     }
     }
