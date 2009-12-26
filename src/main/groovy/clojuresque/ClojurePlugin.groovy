@@ -35,6 +35,7 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.plugins.Convention
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.plugins.ProjectPluginsContainer
 import org.gradle.api.tasks.ConventionValue
 import org.gradle.api.tasks.bundling.Jar
@@ -42,6 +43,7 @@ import org.gradle.api.tasks.bundling.Jar
 public class ClojurePlugin implements Plugin {
     public void use(Project project, ProjectPluginsContainer handler) {
         JavaPlugin javaPlugin = handler.usePlugin(JavaPlugin.class, project)
+        MavenPlugin mavenPlugin = handler.usePlugin(MavenPlugin.class, project)
 
         project.convention.plugins["clojure"] =
             new ClojurePluginConvention(project)
