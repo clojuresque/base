@@ -44,6 +44,13 @@ class ClojurePluginConvention {
     public void clojarsRepo(RepositoryHandler repos) {
         repos.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
     }
+
+    public void gradleHomeRepo(RepositoryHandler repos) {
+        String home = System.getenv('GRADLE_HOME')
+        if (home != null) {
+            repos.flatDir name: 'gradleHome', dirs: new File(home + '/lib')
+        }
+    }
     }
 
     public boolean getWarnOnReflection() {
