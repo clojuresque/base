@@ -5,6 +5,13 @@ usePlugin 'maven'
 group = 'clojuresque'
 version = '1.2.0-SNAPSHOT'
 
+configurations {
+    clojarsDeployerJars {
+        visible = false
+        description = 'Private configuration to hold ssh wagon dependencies'
+    }
+}
+
 repositories {
     flatDir name: 'gradle', dirs: new File(System.getenv('GRADLE_HOME') + '/lib')
     mavenCentral()
@@ -22,22 +29,24 @@ dependencies {
     groovy name: 'antlr', version:'2.7.7'
     groovy name: 'ant', version:'1.7.0'
     groovy name: 'ivy', version:'2.1.0-rc2'
+
+    clojarsDeployerJars 'org.apache.ant:ant-jsch:1.7.0'
 }
 
-// Dummy to make gradle generate a POM.
+ant.taskdef name: 'clojarsScpDeploy', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: configurations.clojarsDeployerJars.asPath
+
+File dummyRepo = new File(project.buildDir, 'deploy')
+
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: String.format("file://%s/dummy-repo", project.buildDir.path))
+        name = 'dummyClojarsLocalDeployer'
+        description  = 'Dummy deployer to trick gradle into pom generation'
+        repository(url: 'file://' + dummyRepo.path)
     }
 }
 
-task deployClojars(dependsOn: uploadArchives) << {
-    ant.exec(executable: '/usr/bin/scp') {
-        arg(value: String.format("%s/poms/pom-default.xml",
-            project.buildDir.path))
-        arg(value: String.format("%s/libs/%s-%s.jar",
-            project.buildDir.path,
-            project.name, project.version))
-        arg(value: "clojars@clojars.org:")
+uploadArchives.doLast {
+    ant.clojarsScpDeploy(todir: 'clojars@clojars.org:', keyfile: new File(project.clojarsKeyfile).absolutePath, passphrase: project.clojarsPassphrase) {
+        fileset(dir: dummyRepo, excludes: '**/maven-metadata.xml*')
     }
 }
