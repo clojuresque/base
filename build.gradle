@@ -21,6 +21,7 @@ dependencies {
     groovy name: 'logback-classic', version:'0.9.9'
     groovy name: 'antlr', version:'2.7.7'
     groovy name: 'ant', version:'1.7.0'
+    groovy name: 'ivy', version:'2.1.0-rc2'
 }
 
 // Dummy to make gradle generate a POM.

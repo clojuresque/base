@@ -25,6 +25,7 @@ package clojuresque
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.tasks.Upload
 
 class ClojurePluginConvention {
     Project project
@@ -71,6 +72,25 @@ class ClojurePluginConvention {
             didConfigureDeployerJars = true
         }
     }
+
+    public void configureClojarsDeploy(Upload task) {
+        File dummyRepo = new File(project.buildDir, 'deploy')
+
+        configureDeployerJars()
+
+        project.configure(task) {
+            repositories.mavenDeployer {
+                name = 'dummyClojarsLocalDeployer'
+                description  = 'Dummy deployer to trick gradle into pom generation'
+                repository(url: 'file://' + dummyRepo.path)
+            }
+        }
+
+        task.doLast {
+            project.ant.clojarsScpDeploy(todir: 'clojars@clojars.org:', keyfile: new File(project.clojarsKeyfile).absolutePath, passphrase: project.clojarsPassphrase) {
+                fileset(dir: dummyRepo, excludes: '**/maven-metadata.xml*')
+            }
+        }
     }
 
     public boolean getWarnOnReflection() {
