@@ -58,10 +58,7 @@ public class ClojureCompileTask extends SourceTask {
 
     private void initialise() {
         def action = [ execute: { ClojureCompileTask task ->
-            if (!task.project.aotCompile) {
-                return
-            }
-
+            boolean aotCompile = task.project.aotCompile
             boolean warnOnReflection = task.project.warnOnReflection
             Set<File> sourceDirs = task.sourceSet.srcDirs
             File destDir = task.destinationDir
@@ -103,6 +100,7 @@ public class ClojureCompileTask extends SourceTask {
                 sysproperty(key: "clojure.compile.path", value: destDir)
                 sysproperty(key: "clojure.compile.warn-on-reflection",
                     value: warnOnReflection)
+                sysproperty(key: "clojuresque.compile", value: aotCompile)
                 source.each {
                     arg(value: it)
                 }

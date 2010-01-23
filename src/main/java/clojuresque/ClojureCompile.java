@@ -51,7 +51,9 @@ public class ClojureCompile {
     private static final IPersistentSet NS_FORMS =
         RT.set(Symbol.intern("ns"), Symbol.intern("clojure.core", "ns"));
 
+    private static final String DO_COMPILE_PROP = "clojuresque.compile";
     private static final Var compile = RT.var("clojure.core", "compile");
+    private static final Var require = RT.var("clojure.core", "require");
 
     private static Object findNamespace(Object form) {
         if (!(form instanceof ISeq))
@@ -69,6 +71,7 @@ public class ClojureCompile {
         String compilePath = System.getProperty(COMPILE_PATH_PROP);
         boolean warnOnReflection =
             System.getProperty(WARN_ON_REFLECTION_PROP).equals("true");
+        boolean doCompile = System.getProperty(DO_COMPILE_PROP).equals("true");
 
         IPersistentMap threadBindings = RT.map(
                 COMPILE_PATH, compilePath,
@@ -88,8 +91,12 @@ public class ClojureCompile {
                 try {
                     Object o = LispReader.read(rdr, false, null, false);
                     Object ns = findNamespace(o);
-                    if (ns != null && !seen.contains(ns))
-                        compile.invoke(ns);
+                    if (ns != null && !seen.contains(ns)) {
+                        if (doCompile)
+                            compile.invoke(ns);
+                        else
+                            require.invoke(ns);
+                    }
                     seen = (IPersistentSet)seen.cons(ns);
                 } finally {
                     rdr.close();
