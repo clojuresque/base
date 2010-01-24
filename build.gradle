@@ -29,11 +29,7 @@ dependencies {
     groovy name: 'antlr', version:'2.7.7'
     groovy name: 'ant', version:'1.7.0'
     groovy name: 'ivy', version:'2.1.0-rc2'
-
-    clojarsDeployerJars 'org.apache.ant:ant-jsch:1.7.0'
 }
-
-ant.taskdef name: 'clojarsScpDeploy', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: configurations.clojarsDeployerJars.asPath
 
 File dummyRepo = new File(project.buildDir, 'deploy')
 
@@ -46,7 +42,21 @@ uploadArchives {
 }
 
 uploadArchives.doLast {
-    ant.clojarsScpDeploy(todir: 'clojars@clojars.org:', keyfile: new File(project.clojarsKeyfile).absolutePath, passphrase: project.clojarsPassphrase) {
-        fileset(dir: dummyRepo, excludes: '**/maven-metadata.xml*')
+    fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
+        String name = it.path
+        String basename = name.substring(0, name.length() - 4)
+        String newname = basename + '.xml'
+
+        project.ant.move(file: it, tofile: project.file(newname))
+    }
+
+    Map args = [
+        executable:  '/usr/bin/scp',
+        failOnError: true
+    ]
+
+    project.ant.exec(args) {
+        fileTree(dummyRepo).each { arg value: it }
+        arg value: 'clojars@clojars.org:'
     }
 }
