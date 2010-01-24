@@ -34,10 +34,10 @@ the [Clojure][] jar must be available also to the Java portion of the project.
   first in the file. Comments may precede the form. The symbol is allowed
   to be fully qualified: `clojure.core/ns`.
 
-* In order for the scp deployment of [Clojars][cr] to work, you have to
-  replace the jsch jar in `${{GRADLE_HOME}/lib` with jsch-0.1.29.jar.
-  Otherwise the transfer might hang.  See this [ant bug][antbug] for more
-  information.
+* [Clojars][cr] deployment is currently broken, because the clojars server
+  does not like a single Java implementation of ssh. With other servers like
+  the „real“ ssh it works quite well, though. I suspect the issue to be on
+  the clojars side.
 
 ## Usage
 
@@ -105,29 +105,24 @@ From now on you can skip the whole `buildscript` stuff and just use
 
 ## Clojars Deployment
 
-Additional to configuration of the `Upload` tasks with `configureClojarsDeploy`
-you also have to specify the location of the keyfile and the passphrase you
-use to access [Clojars][cr]. This can be done independent of the projects
-in a file called `${HOME}/.gradle/gradle.properties`.
-
-    clojarsKeyfile = /Users/mb/.ssh/id_dsa
-    clojarsPassphrase = My super secret passphrase
-
-**Be sure to correctly secure this file! Or your key might be compromised!**
+**Note: Does work only on Unix/Mac OS via shell out to scp. Does not
+work on Windows! Make sure you have agent running which handles your
+clojars key.**
 
 ## Issues
 
 This is **alpha** software! Expect problems! Please report issues in the
-bugtracker at [bitbucket in the 'Issues' tab][cg].
+bugtracker at [the lighthouse tracker][lh].
 
 -- 
 Meikel Brandmeyer <mb@kotka.de>
-Frankfurt am Main, December 2009
+Frankfurt am Main, January 2010
 
 [Gradle]: http://www.gradle.org
 [Groovy]: http://groovy.codehaus.org
 [clj]:    http://clojure.org
 [cg]:     http://bitbucket.org/kotarak/clojuresque
+[lh]:     http://kotka.lighthouseapp.com/projects/45093-clojuresque/overview
 [cr]:     http://clojars.org
 [hudson]: http://build.clojure.org
 [antbug]: https://issues.apache.org/bugzilla/show_bug.cgi?id=41090
