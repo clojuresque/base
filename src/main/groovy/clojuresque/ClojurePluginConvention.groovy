@@ -55,28 +55,8 @@ class ClojurePluginConvention {
         }
     }
 
-    private void configureDeployerJars() {
-        if (!didConfigureDeployerJars) {
-            project.configurations {
-                clojarsDeployerJars {
-                    visible = false
-                    description = 'Private configuration to hold ssh wagon dependencies'
-                }
-            }
-            project.dependencies {
-                clojarsDeployerJars 'org.apache.ant:ant-jsch:1.7.0'
-            }
-
-            project.ant.taskdef name: 'clojarsScpDeploy', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: project.configurations.clojarsDeployerJars.asPath
-
-            didConfigureDeployerJars = true
-        }
-    }
-
     public void configureClojarsDeploy(Upload task) {
         File dummyRepo = new File(project.buildDir, 'deploy')
-
-        configureDeployerJars()
 
         project.configure(task) {
             repositories.mavenDeployer {
@@ -87,8 +67,25 @@ class ClojurePluginConvention {
         }
 
         task.doLast {
-            project.ant.clojarsScpDeploy(todir: 'clojars@clojars.org:', keyfile: new File(project.clojarsKeyfile).absolutePath, passphrase: project.clojarsPassphrase) {
-                fileset(dir: dummyRepo, excludes: '**/maven-metadata.xml*')
+            /* Clojars. :( This was changed in the source by Alex based
+             * on a note I sent him. This was before christmas 2009. Now,
+             * end of January 2010 it's still the old version live. */
+            fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
+                String name = it.path
+                String basename = name.substring(0, name.length() - 4)
+                String newname = basename + '.xml'
+
+                project.ant.move(file: it, tofile: project.file(newname))
+            }
+
+            Map args = [
+                executable:  '/usr/bin/scp',
+                failOnError: true
+            ]
+
+            project.ant.exec(args) {
+                fileTree(dummyRepo).each { arg value: it }
+                arg value: 'clojars@clojars.org:'
             }
         }
     }
