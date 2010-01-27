@@ -3,7 +3,7 @@ usePlugin 'groovy'
 usePlugin 'maven'
 
 group = 'clojuresque'
-version = '1.3.0'
+version = '1.4.0-SNAPSHOT'
 
 configurations {
     clojarsDeployerJars {
