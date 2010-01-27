@@ -144,7 +144,7 @@ public class ClojurePlugin implements Plugin {
             }
         }
         project.dependencies {
-            clojuresque 'clojuresque:clojuresque:1.3.0-SNAPSHOT'
+            clojuresque 'clojuresque:clojuresque:1.3.0'
         }
     }
 
