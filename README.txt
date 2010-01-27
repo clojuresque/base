@@ -26,10 +26,6 @@ the [Clojure][] jar must be available also to the Java portion of the project.
 
 ## Caveats
 
-* Sitting between the chairs of [Clojure][clj]'s namespace based and the
-  other languages file based compilation, you have to include or exclude
-  namespaces based on filenames for now.
-
 * Automatic recognition of namespaces only works if the `ns` form is the
   first in the file. Comments may precede the form. The symbol is allowed
   to be fully qualified: `clojure.core/ns`.
@@ -102,6 +98,19 @@ the following line to `${GRADLE_HOME}/plugin.properties`:
 
 From now on you can skip the whole `buildscript` stuff and just use
 `usePlugin('clojure')` to load the plugin.
+
+## Filter
+
+In the filesets you can specify filters with `include` resp. `exclude`.
+This is fine for mostly file based languages. However clojure is strongly
+based on namespaces. Therefor the clojure part of the source sets support
+also `includeNamespace` and `excludeNamespace` which can be used to filter
+on the namespace name. Eg. to exclude examples from the final jar one
+could use
+
+    sourceSets.main.clojure {
+        excludeNamespace 'my.project.examples.**.*'
+    }
 
 ## Clojars Deployment
 

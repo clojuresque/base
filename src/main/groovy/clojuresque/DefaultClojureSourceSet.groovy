@@ -36,8 +36,22 @@ import groovy.lang.Closure
 import java.io.File
 import java.util.Set
 
+private class ClojureSourceDirectorySet extends DefaultSourceDirectorySet {
+    public ClojureSourceDirectorySet(String desc, FileResolver fileResolver) {
+        super(desc, fileResolver)
+    }
+
+    public void includeNamespace(String pattern) {
+        include(pattern.replaceAll("-", "_").replaceAll("\\.", "/")+".clj")
+    }
+
+    public void excludeNamespace(String pattern) {
+        exclude(pattern.replaceAll("-", "_").replaceAll("\\.", "/")+".clj")
+    }
+}
+
 public class DefaultClojureSourceSet implements ClojureSourceSet {
-    private DefaultSourceDirectorySet clojure
+    private ClojureSourceDirectorySet clojure
     private PatternSet clojurePatterns
     private UnionFileTree allClojure
 
@@ -45,7 +59,7 @@ public class DefaultClojureSourceSet implements ClojureSourceSet {
             FileResolver fileResolver) {
         String desc = String.format("%s Clojure source", displayName)
 
-        clojure = new DefaultSourceDirectorySet(desc, fileResolver)
+        clojure = new ClojureSourceDirectorySet(desc, fileResolver)
         clojure.filter.include("**/*.clj")
 
         clojurePatterns = new PatternSet()
@@ -54,7 +68,7 @@ public class DefaultClojureSourceSet implements ClojureSourceSet {
         allClojure = new UnionFileTree(desc, clojure.matching(clojurePatterns))
     }
 
-    public DefaultSourceDirectorySet getClojure() {
+    public ClojureSourceDirectorySet getClojure() {
         return clojure
     }
 
