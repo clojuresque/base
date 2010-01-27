@@ -38,9 +38,12 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.plugins.ProjectPluginsContainer
 import org.gradle.api.tasks.ConventionValue
+import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Jar
 
 public class ClojurePlugin implements Plugin {
+    public static final String UEBERJAR_TASK_NAME = 'ueberjar'
+
     public void use(Project project, ProjectPluginsContainer handler) {
         JavaPlugin javaPlugin = handler.usePlugin(JavaPlugin.class, project)
         MavenPlugin mavenPlugin = handler.usePlugin(MavenPlugin.class, project)
@@ -52,6 +55,7 @@ public class ClojurePlugin implements Plugin {
         configureSourceSetDefaults(project, javaPlugin)
         configureConfigurations(project)
         configureArchives(project)
+        configureUeberjar(project)
     }
 
     private JavaPluginConvention javaConvention(Convention convention) {
@@ -153,5 +157,25 @@ public class ClojurePlugin implements Plugin {
 
         project.tasks[JavaPlugin.JAR_TASK_NAME].doFirst(action)
     }
-}
 
+    private void configureUeberjar(Project project) {
+        Jar jar = project.tasks[JavaPlugin.JAR_TASK_NAME]
+        Jar ueberjar = project.tasks.add(UEBERJAR_TASK_NAME, Jar.class)
+
+        ueberjar.configure {
+            description =
+                'Constructs a jar with all runtime dependencies included'
+            dependsOn(jar)
+            baseName = jar.baseName + "-standalone"
+            enabled = false
+            doFirst {
+                if (!jar.enabled)
+                    throw new StopExecutionException("SKIPPED: jar not enabled")
+                project.configurations.runtime.resolve().each {
+                    ueberjar.merge it
+                }
+                ueberjar.merge jar.archivePath
+            }
+        }
+    }
+}

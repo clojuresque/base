@@ -106,13 +106,23 @@ From now on you can skip the whole `buildscript` stuff and just use
 ## Clojars Deployment
 
 **Note: Does work only on Unix/Mac OS via shell out to scp. Does not
-work on Windows! Make sure you have agent running which handles your
+work on Windows! Make sure you have an agent running which handles your
 clojars key.**
+
+## Überjars
+
+As Leiningen, Clojuresque now supports überjars. That means you can enable
+the `ueberjar` task with
+
+    ueberjar.enabled = true
+
+Then invoking `gradle ueberjar` will create a jar file with all runtime
+dependencies included.
 
 ## Issues
 
 This is **alpha** software! Expect problems! Please report issues in the
-bugtracker at [the lighthouse tracker][lh].
+bugtracker at [the lighthouse tracker][lh]. Or email them to me.
 
 -- 
 Meikel Brandmeyer <mb@kotka.de>
