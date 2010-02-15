@@ -140,11 +140,17 @@ public class ClojurePlugin implements Plugin {
             clojuresque {
                 transitive = false
                 visible = false
-                description = "Dependency on the Clojuresque compiler"
+                description = "Deprecated: Please use the development configuration"
+            }
+            development {
+                transitive = false
+                visible = false
+                description = "Development only dependencies"
+                extendsFrom clojuresque
             }
         }
         project.dependencies {
-            clojuresque 'clojuresque:clojuresque:1.4.0-SNAPSHOT'
+            development 'clojuresque:clojuresque:1.4.0-SNAPSHOT'
         }
     }
 

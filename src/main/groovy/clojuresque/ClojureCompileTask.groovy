@@ -64,7 +64,7 @@ public class ClojureCompileTask extends SourceTask {
             File destDir = task.destinationDir
             FileTree source = task.source
             FileCollection cp = task.classpath
-            FileCollection clojuresque = task.project.configurations['clojuresque']
+            FileCollection devDeps = task.project.configurations['development']
 
             Map args = [
                 classname:    'clojuresque.ClojureCompile',
@@ -88,7 +88,7 @@ public class ClojureCompileTask extends SourceTask {
                     pathelement(location: it)
                 }
 
-                clojuresque.each {
+                devDeps.each {
                     logger.debug("Add {} to Ant classpath!", it)
                     pathelement(location: it)
                 }
