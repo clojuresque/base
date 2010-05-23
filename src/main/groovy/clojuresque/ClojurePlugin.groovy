@@ -36,23 +36,22 @@ import org.gradle.api.plugins.Convention
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.MavenPlugin
-import org.gradle.api.plugins.ProjectPluginsContainer
 import org.gradle.api.tasks.ConventionValue
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Jar
 
-public class ClojurePlugin implements Plugin {
+public class ClojurePlugin implements Plugin<Project> {
     public static final String UEBERJAR_TASK_NAME = 'ueberjar'
 
-    public void use(Project project, ProjectPluginsContainer handler) {
-        JavaPlugin javaPlugin = handler.usePlugin(JavaPlugin.class, project)
-        MavenPlugin mavenPlugin = handler.usePlugin(MavenPlugin.class, project)
+    public void apply(Project project) {
+        project.plugins.apply(JavaPlugin.class)
+        project.plugins.apply(MavenPlugin.class)
 
         project.convention.plugins["clojure"] =
             new ClojurePluginConvention(project)
 
         configureCompileDefaults(project)
-        configureSourceSetDefaults(project, javaPlugin)
+        configureSourceSetDefaults(project)
         configureConfigurations(project)
         configureArchives(project)
         configureUeberjar(project)
@@ -86,7 +85,7 @@ public class ClojurePlugin implements Plugin {
     }
 
     private configureSourceSet(DefaultSourceSet sourceSet,
-            Project project, JavaPlugin javaPlugin) {
+            Project project) {
         ProjectInternal projectInternal = (ProjectInternal)project
         String srcDir = String.format("src/%s/clojure", sourceSet.name)
 
@@ -125,10 +124,9 @@ public class ClojurePlugin implements Plugin {
         project.tasks[sourceSet.classesTaskName].dependsOn(compileTaskName)
     }
 
-    private void configureSourceSetDefaults(Project project,
-            JavaPlugin javaPlugin) {
+    private void configureSourceSetDefaults(Project project) {
         def action = [ execute: { SourceSet sourceSet ->
-            configureSourceSet(sourceSet, project, javaPlugin)
+            configureSourceSet(sourceSet, project)
         } ] as Action
 
         project.convention.getPlugin(JavaPluginConvention.class)
@@ -178,9 +176,9 @@ public class ClojurePlugin implements Plugin {
                 if (!jar.enabled)
                     throw new StopExecutionException("SKIPPED: jar not enabled")
                 project.configurations.runtime.resolve().each {
-                    ueberjar.merge it
+                    ueberjar.from zipTree(it)
                 }
-                ueberjar.merge jar.archivePath
+                ueberjar.from zipTree(jar.archivePath)
             }
         }
     }
