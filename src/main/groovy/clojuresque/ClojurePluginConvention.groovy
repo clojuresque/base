@@ -70,7 +70,7 @@ class ClojurePluginConvention {
             /* Clojars. :( This was changed in the source by Alex based
              * on a note I sent him. This was before christmas 2009. Now,
              * end of January 2010 it's still the old version live. */
-            fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
+            project.fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
                 String name = it.path
                 String basename = name.substring(0, name.length() - 4)
                 String newname = basename + '.xml'
@@ -84,7 +84,7 @@ class ClojurePluginConvention {
             ]
 
             project.ant.exec(args) {
-                fileTree(dummyRepo).each { arg value: it }
+                project.fileTree(dummyRepo).each { arg value: it }
                 arg value: 'clojars@clojars.org:'
             }
         }
