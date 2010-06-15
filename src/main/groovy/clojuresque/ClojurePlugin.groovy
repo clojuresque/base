@@ -31,6 +31,7 @@ import org.gradle.api.internal.ConventionMapping
 import org.gradle.api.internal.IConventionAware
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.internal.tasks.DefaultSourceSet
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.plugins.Convention
 import org.gradle.api.plugins.JavaPlugin
@@ -42,6 +43,7 @@ import org.gradle.api.tasks.bundling.Jar
 
 public class ClojurePlugin implements Plugin<Project> {
     public static final String UEBERJAR_TASK_NAME = 'ueberjar'
+    public static final String DEPS_TASK_NAME = 'deps'
 
     public void apply(Project project) {
         project.plugins.apply(JavaPlugin.class)
@@ -55,6 +57,7 @@ public class ClojurePlugin implements Plugin<Project> {
         configureConfigurations(project)
         configureArchives(project)
         configureUeberjar(project)
+        configureDepsTask(project)
     }
 
     private JavaPluginConvention javaConvention(Convention convention) {
@@ -180,6 +183,17 @@ public class ClojurePlugin implements Plugin<Project> {
                 }
                 ueberjar.from zipTree(jar.archivePath)
             }
+        }
+    }
+
+    private void configureDepsTask(Project project) {
+        Copy deps = project.tasks.add(DEPS_TASK_NAME, Copy)
+
+        deps.configure {
+            description =
+                'Copy runtime dependencies into the build/lib directory'
+            into 'lib'
+            from project.configurations.testRuntime
         }
     }
 }
