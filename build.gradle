@@ -15,23 +15,14 @@ configurations {
 }
 
 repositories {
-    flatDir name: 'gradle', dirs: new File(System.getenv('GRADLE_HOME') + '/lib')
-    flatDir name: 'plugins', dirs: new File(System.getenv('GRADLE_HOME') + '/lib/plugins')
     mavenCentral()
 }
 
 dependencies {
     groovy 'org.clojure:clojure:1.0.0'
 
-    groovy name: 'groovy-all', version: '1.7.2'
-    groovy name: 'gradle-core', version: '0.9-preview-3'
-    groovy name: 'gradle-plugins', version: '0.9-preview-3'
-    groovy name: 'asm-all', version: '3.2'
-    groovy name: 'slf4j-api', version:'1.6.0'
-    groovy name: 'logback-core', version:'0.9.21'
-    groovy name: 'logback-classic', version:'0.9.21'
-    groovy name: 'ant', version:'1.8.1'
-    groovy name: 'ivy', version:'2.1.0'
+    groovy gradleApi()
+    groovy localGroovy()
 }
 
 File dummyRepo = new File(project.buildDir, 'deploy')
