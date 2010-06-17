@@ -40,6 +40,10 @@ class ClojurePluginConvention {
         this.aotCompile = false
     }
 
+    public void configureClojarsDeploy() {
+        configureClojarsDeploy(project.uploadArchives)
+    }
+
     public void configureClojarsDeploy(Upload task) {
         File dummyRepo = new File(project.buildDir, 'deploy')
 
