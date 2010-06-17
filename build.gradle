@@ -41,25 +41,29 @@ uploadArchives {
         name = 'dummyClojarsLocalDeployer'
         description  = 'Dummy deployer to trick gradle into pom generation'
         repository(url: 'file://' + dummyRepo.path)
+        if (project.hasProperty('snapshotsrepo'))
+            snapshotRepository url: project.snapshotsrepo
     }
 }
 
 uploadArchives.doLast {
-    fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
-        String name = it.path
-        String basename = name.substring(0, name.length() - 4)
-        String newname = basename + '.xml'
+    if (!project.version.endsWith("-SNAPSHOT")) {
+        project.fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
+            String name = it.path
+            String basename = name.substring(0, name.length() - 4)
+            String newname = basename + '.xml'
 
-        project.ant.move(file: it, tofile: project.file(newname))
-    }
+            project.ant.move(file: it, tofile: project.file(newname))
+        }
 
-    Map args = [
-        executable:  '/usr/bin/scp',
-        failOnError: true
-    ]
+        Map args = [
+            executable:  '/usr/bin/scp',
+            failOnError: true
+        ]
 
-    project.ant.exec(args) {
-        fileTree(dummyRepo).each { arg value: it }
-        arg value: 'clojars@clojars.org:'
+        project.ant.exec(args) {
+            project.fileTree(dummyRepo).each { arg value: it }
+            arg value: 'clojars@clojars.org:'
+        }
     }
 }
