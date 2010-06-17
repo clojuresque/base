@@ -24,8 +24,8 @@ dependencies {
     groovy 'org.clojure:clojure:1.0.0'
 
     groovy name: 'groovy-all', version: '1.7.1'
-    groovy name: 'gradle-core', version: '0.9-preview-1'
-    groovy name: 'gradle-plugins', version: '0.9-preview-1'
+    groovy name: 'gradle-core', version: '0.9-preview-3'
+    groovy name: 'gradle-plugins', version: '0.9-preview-3'
     groovy name: 'asm-all', version: '3.2'
     groovy name: 'slf4j-api', version:'1.5.10'
     groovy name: 'logback-core', version:'0.9.18'
