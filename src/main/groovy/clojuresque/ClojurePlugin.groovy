@@ -52,6 +52,9 @@ public class ClojurePlugin implements Plugin<Project> {
         project.convention.plugins["clojure"] =
             new ClojurePluginConvention(project)
 
+        project.repositories.convention.plugins["clojure"] =
+            new ClojureRepositoryConvention(project.repositories)
+
         configureCompileDefaults(project)
         configureSourceSetDefaults(project)
         configureConfigurations(project)

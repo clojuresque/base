@@ -40,21 +40,6 @@ class ClojurePluginConvention {
         this.aotCompile = false
     }
 
-    public void clojureSnapshotsRepo(RepositoryHandler repos) {
-        repos.mavenRepo name: 'clojureHudson', urls: 'http://build.clojure.org/snapshots'
-    }
-
-    public void clojarsRepo(RepositoryHandler repos) {
-        repos.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
-    }
-
-    public void gradleHomeRepo(RepositoryHandler repos) {
-        String home = System.getenv('GRADLE_HOME')
-        if (home != null) {
-            repos.flatDir name: 'gradleHome', dirs: new File(home + '/lib/plugins')
-        }
-    }
-
     public void configureClojarsDeploy(Upload task) {
         File dummyRepo = new File(project.buildDir, 'deploy')
 
