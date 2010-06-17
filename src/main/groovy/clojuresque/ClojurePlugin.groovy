@@ -42,7 +42,7 @@ import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Jar
 
 public class ClojurePlugin implements Plugin<Project> {
-    public static final String UEBERJAR_TASK_NAME = 'ueberjar'
+    public static final String UEBERJAR_TASK_NAME = 'uberjar'
     public static final String DEPS_TASK_NAME = 'deps'
 
     public void apply(Project project) {
