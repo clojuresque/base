@@ -54,6 +54,7 @@ public class ClojureCompile {
     private static final String DO_COMPILE_PROP = "clojuresque.compile";
     private static final Var compile = RT.var("clojure.core", "compile");
     private static final Var require = RT.var("clojure.core", "require");
+    private static final Var apply = RT.var("clojure.core", "apply");
 
     private static Object findNamespace(Object form) {
         if (!(form instanceof ISeq))
@@ -118,12 +119,25 @@ public class ClojureCompile {
         }
     }
 
+    public static void runTests(ISeq namespaces) throws Exception {
+        require.invoke(Symbol.intern("clojure.test"));
+        Var runtests = RT.var("clojure.test", "run-tests");
+
+        if (RT.seq(namespaces) != null) {
+            apply.invoke(require, namespaces);
+            apply.invoke(runtests, namespaces);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         ISeq argsSeq = RT.seq(args);
-        String command = (String)argsSeq.first();
 
+        String command = (String)argsSeq.first();
+        ISeq namespaces = findNamespaces(argsSeq.next());
         if (command.equals("compile")) {
-            compileFiles(findNamespaces(argsSeq.next()));
+            compileFiles(namespaces);
+        } else if (command.equals("test")) {
+            runTests(namespaces);
         }
     }
 }
