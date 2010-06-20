@@ -101,6 +101,7 @@ public class ClojureCompileTask extends SourceTask {
                 sysproperty(key: "clojure.compile.warn-on-reflection",
                     value: warnOnReflection)
                 sysproperty(key: "clojuresque.compile", value: aotCompile)
+                arg value: "compile"
                 source.each {
                     arg(value: it)
                 }

@@ -67,7 +67,33 @@ public class ClojureCompile {
         return s.next().first();
     }
 
-    public static void main(String[] files) throws Exception {
+    private static ISeq findNamespaces(ISeq files) throws Exception {
+        IPersistentSet seen = RT.set();
+
+        while (files != null) {
+            String file = (String)files.first();
+            PushbackReader rdr =
+                new PushbackReader(
+                        new BufferedReader(
+                            new FileReader(
+                                new File(file))));
+
+            try {
+                Object o = LispReader.read(rdr, false, null, false);
+                Object ns = findNamespace(o);
+                if (ns != null) {
+                    seen = (IPersistentSet)seen.cons(ns);
+                }
+            } finally {
+                rdr.close();
+            }
+
+            files = files.next();
+        }
+        return RT.seq(seen);
+    }
+
+    public static void compileFiles(ISeq namespaces) throws Exception {
         String compilePath = System.getProperty(COMPILE_PATH_PROP);
         boolean warnOnReflection =
             System.getProperty(WARN_ON_REFLECTION_PROP).equals("true");
@@ -77,33 +103,27 @@ public class ClojureCompile {
                 COMPILE_PATH, compilePath,
                 WARN_ON_REFLECTION, warnOnReflection
                 );
-        IPersistentSet seen = RT.set();
 
         Var.pushThreadBindings(threadBindings);
         try {
-            for (String file : files) {
-                PushbackReader rdr =
-                    new PushbackReader(
-                        new BufferedReader(
-                            new FileReader(
-                                new File(file))));
-
-                try {
-                    Object o = LispReader.read(rdr, false, null, false);
-                    Object ns = findNamespace(o);
-                    if (ns != null && !seen.contains(ns)) {
-                        if (doCompile)
-                            compile.invoke(ns);
-                        else
-                            require.invoke(ns);
-                    }
-                    seen = (IPersistentSet)seen.cons(ns);
-                } finally {
-                    rdr.close();
-                }
+            while (namespaces != null) {
+                if (doCompile)
+                    compile.invoke(namespaces.first());
+                else
+                    require.invoke(namespaces.first());
+                namespaces = namespaces.next();
             }
         } finally {
             Var.popThreadBindings();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ISeq argsSeq = RT.seq(args);
+        String command = (String)argsSeq.first();
+
+        if (command.equals("compile")) {
+            compileFiles(findNamespaces(argsSeq.next()));
         }
     }
 }
