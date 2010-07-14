@@ -7,20 +7,11 @@ apply {
 group = 'clojuresque'
 version = '1.4.0-SNAPSHOT'
 
-configurations {
-    clojarsDeployerJars {
-        visible = false
-        description = 'Private configuration to hold ssh wagon dependencies'
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    groovy 'org.clojure:clojure:1.0.0'
-
     groovy gradleApi()
     groovy localGroovy()
 }
