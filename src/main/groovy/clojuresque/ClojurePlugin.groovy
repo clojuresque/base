@@ -147,7 +147,7 @@ public class ClojurePlugin implements Plugin<Project> {
                         executable = '/usr/bin/scp'
                         args = project.files(upload.artifacts)*.path +
                             [ project.file(pomName).path,
-                              'mb@kotka.de:tmp' ] //'clojars@clojars.org:' ]
+                              'clojars@clojars.org:' ]
                     }
                 }
             }
