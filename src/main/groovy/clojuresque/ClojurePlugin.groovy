@@ -27,6 +27,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.Upload
@@ -35,6 +36,7 @@ import org.gradle.api.tasks.bundling.Jar
 public class ClojurePlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.apply plugin: JavaPlugin.class
+        project.apply plugin: MavenPlugin.class
 
         project.convention.plugins.clojure = new ClojurePluginConvention()
 
@@ -130,21 +132,23 @@ public class ClojurePlugin implements Plugin<Project> {
     }
 
     private void configureClojarsUpload(Project project) {
-        project.tasks.withType(Upload.class).each { upload ->
+        project.tasks.whenTaskAdded { upload ->
+            if (!upload instanceof Upload)
+                return
+
             upload.doLast {
                 if (project.clojarsUpload) {
                     String pomName = project.buildDirName + "/" +
                         project.pomDirName + "/" +
-                    "pom-" + upload.configuration.name + ".xml"
+                        "pom-" + upload.configuration.name + ".xml"
 
                     project.pom().writeTo(pomName)
-
                     project.exec {
-                        executable = '/usr/bin/scp',
+                        executable = '/usr/bin/scp'
                         args = project.files(upload.artifacts)*.path +
                             [ project.file(pomName).path,
-                              'clojars@clojars.org:' ]
-                   }
+                              'mb@kotka.de:tmp' ] //'clojars@clojars.org:' ]
+                    }
                 }
             }
         }
