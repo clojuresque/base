@@ -7,45 +7,25 @@ apply {
 group = 'clojuresque'
 version = '1.4.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     groovy gradleApi()
     groovy localGroovy()
 }
 
-File dummyRepo = new File(project.buildDir, 'deploy')
-
-uploadArchives {
-    repositories.mavenDeployer {
-        name = 'dummyClojarsLocalDeployer'
-        description  = 'Dummy deployer to trick gradle into pom generation'
-        repository(url: 'file://' + dummyRepo.path)
-        if (project.hasProperty('snapshotsrepo'))
-            snapshotRepository url: project.snapshotsrepo
-    }
-}
-
 uploadArchives.doLast {
     if (!project.version.endsWith("-SNAPSHOT")) {
-        project.fileTree(dir: dummyRepo, includes: ['**/*.pom']).each {
-            String name = it.path
-            String basename = name.substring(0, name.length() - 4)
-            String newname = basename + '.xml'
+        String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
+            project.name + "-" + project.version + ".xml"
 
-            project.ant.move(file: it, tofile: project.file(newname))
-        }
+        project.pom().writeTo(pomName)
 
-        Map args = [
-            executable:  '/usr/bin/scp',
-            failOnError: true
-        ]
-
-        project.ant.exec(args) {
-            project.fileTree(dummyRepo).each { arg value: it }
-            arg value: 'clojars@clojars.org:'
+        project.exec {
+            commandLine(
+                '/usr/bin/scp',
+                project.file(project.tasks.jar.archivePath).path,
+                project.file(pomName).path,
+                'clojars@clojars.org:'
+            )
         }
     }
 }
