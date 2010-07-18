@@ -23,7 +23,29 @@
 
 package clojuresque
 
-class ClojurePluginConvention {
-    def boolean warnOnReflection = false
-    def boolean aotCompile = false
+import org.gradle.api.Project
+import org.gradle.api.tasks.Upload
+
+class ClojureUploadConvention {
+    private Upload upload
+
+    public ClojureUploadConvention(Upload upload) {
+        this.upload = upload
+    }
+
+    public void clojarsDeploy() {
+        upload.doLast {
+            String pomName = project.buildDirName + "/" +
+                project.pomDirName + "/" +
+                "pom-" + upload.configuration.name + ".xml"
+
+            project.pom().writeTo(pomName)
+            project.exec {
+                executable = '/usr/bin/scp'
+                args = project.files(upload.artifacts)*.path +
+                    [ project.file(pomName).path,
+                      'clojars@clojars.org:' ]
+            }
+        }
+    }
 }

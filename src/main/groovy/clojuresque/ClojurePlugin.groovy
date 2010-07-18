@@ -133,22 +133,8 @@ public class ClojurePlugin implements Plugin<Project> {
         project.tasks.whenTaskAdded { upload ->
             if (!upload instanceof Upload)
                 return
-
-            upload.doLast {
-                if (project.clojarsUpload) {
-                    String pomName = project.buildDirName + "/" +
-                        project.pomDirName + "/" +
-                        "pom-" + upload.configuration.name + ".xml"
-
-                    project.pom().writeTo(pomName)
-                    project.exec {
-                        executable = '/usr/bin/scp'
-                        args = project.files(upload.artifacts)*.path +
-                            [ project.file(pomName).path,
-                              'clojars@clojars.org:' ]
-                    }
-                }
-            }
+            upload.convention.plugins.clojure =
+                new ClojureUploadConvention(upload)
         }
     }
 }
