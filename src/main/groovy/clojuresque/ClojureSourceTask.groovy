@@ -64,12 +64,12 @@ public class ClojureSourceTask extends SourceTask {
 
     /* Duplicate the functionality of ClojureSourceSet. */
     public ClojureCompileTask includeNamespace(String pattern) {
-        include(patter.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
+        include(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
         return this
     }
 
     public ClojureCompileTask excludeNamespace(String pattern) {
-        exclude(patter.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
+        exclude(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
         return this
     }
 }
