@@ -105,16 +105,14 @@ public class ClojurePlugin implements Plugin<Project> {
             project.tasks.add(name: "uber" + jar.name, type: Jar.class) {
                 description =
                     'Constructs a jar with all runtime dependencies included'
-                dependsOn jar, project.configurations.runtime
+                dependsOn jar.source, project.configurations.runtime
                 baseName = jar.baseName + "-standalone"
                 enabled = false
                 doFirst {
-                    if (!jar.enabled)
-                        throw new StopExecutionException("SKIPPED: " + jar.name + " not enabled")
                     project.configurations.runtime.each {
                         from project.zipTree(it)
                     }
-                    from project.zipTree(jar.archivePath)
+                    from jar.source
                 }
             }
         }
