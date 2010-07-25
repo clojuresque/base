@@ -54,6 +54,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
             classpath = project.files(
                 this.inputRoots,
                 this.destinationDir,
+                project.configurations.development,
                 this.compileClasspath
             )
             main = "clojure.main"

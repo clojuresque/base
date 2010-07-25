@@ -75,6 +75,7 @@ public class ClojurePlugin implements Plugin<Project> {
                 inputRoot set.clojure.sourceDir
                 compileClasspath = set.compileClasspath
                 dependsOn set.compileClasspath
+                dedendsOn project.configurations.development
                 description =
                     String.format("Compile the %s Clojure source.",
                             set.name)
@@ -96,7 +97,6 @@ public class ClojurePlugin implements Plugin<Project> {
                 description = "Development only dependencies"
                 extendsFrom clojuresque
             }
-            compile.extendsFrom development
         }
     }
 
@@ -126,6 +126,7 @@ public class ClojurePlugin implements Plugin<Project> {
                 'Copy runtime dependencies into the build/lib directory'
             into 'lib'
             from project.configurations.testRuntime
+            from project.configurations.development
         }
     }
 
