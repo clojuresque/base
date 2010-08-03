@@ -44,9 +44,9 @@ public class ClojurePlugin implements Plugin<Project> {
         repos.convention.plugins.clojure =
             new ClojureRepositoryConvention(repos)
 
+        configureConfigurations(project)
         configureSourceSets(project)
         configureCompilation(project)
-        configureConfigurations(project)
         configureUberjar(project)
         configureDepsTask(project)
         configureClojarsUpload(project)
