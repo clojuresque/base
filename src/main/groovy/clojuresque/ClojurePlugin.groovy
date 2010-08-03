@@ -74,8 +74,7 @@ public class ClojurePlugin implements Plugin<Project> {
                 source set.clojure
                 inputRoot set.clojure.sourceDir
                 compileClasspath = set.compileClasspath
-                dependsOn set.compileClasspath
-                dedendsOn project.configurations.development
+                dependsOn set.compileClasspath, project.configurations.development
                 description =
                     String.format("Compile the %s Clojure source.",
                             set.name)
