@@ -80,6 +80,10 @@ public class ClojurePlugin implements Plugin<Project> {
                             set.name)
             }
             project.tasks[set.classesTaskName].dependsOn task
+            set.compileClasspath = project.files(
+                set.compileClasspath,
+                project.configurations.development
+            )
         }
     }
 
