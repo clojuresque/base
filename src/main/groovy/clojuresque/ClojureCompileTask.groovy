@@ -33,7 +33,8 @@ public class ClojureCompileTask extends ClojureSourceTask {
         String cmd = String.format(
             this.class.getResourceAsStream("ClojureCompileDriver.clj").text,
             source.collect {
-                String.format("(java.io.File. \"%s\")", it.path)
+                String.format("(java.io.File. \"%s\")",
+                    it.path.replace("\\", "\\\\"))
             }.join(" "),
             project.aotCompile ? "compile" : "require"
         )
