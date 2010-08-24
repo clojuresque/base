@@ -114,6 +114,7 @@ public class ClojurePlugin implements Plugin<Project> {
                 doFirst {
                     project.configurations.runtime.each {
                         from project.zipTree(it)
+                        exclude 'META-INF/MANIFEST.MF'
                     }
                     from jar.source
                 }
