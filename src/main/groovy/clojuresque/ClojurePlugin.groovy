@@ -26,6 +26,7 @@ package clojuresque
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.tasks.Copy
@@ -53,15 +54,16 @@ public class ClojurePlugin implements Plugin<Project> {
     }
 
     private void configureSourceSets(Project project) {
+        ProjectInternal projectInternal = (ProjectInternal)project
+
         project.sourceSets.each { sourceSet ->
-            String srcDir = String.format("src/%s/clojure", sourceSet.name)
+            ClojureSourceSet clojureSourceSet =
+                new ClojureSourceSet(sourceSet.name, projectInternal.fileResolver)
 
-            ClojureSourceSetConvention clojureSourceSetConvention =
-                new ClojureSourceSetConvention(project, srcDir)
-
-            sourceSet.convention.plugins.clojure = clojureSourceSetConvention
+            sourceSet.convention.plugins.clojure = clojureSourceSet
+            sourceSet.clojure.srcDirs = [ String.format("src/%s/clojure", sourceSet.name) ]
             sourceSet.resources.filter.exclude("**/*.clj")
-            sourceSet.allSource.plus(clojureSourceSetConvention.clojure)
+            sourceSet.allSource.add(clojureSourceSet.clojure)
         }
     }
 
@@ -72,7 +74,7 @@ public class ClojurePlugin implements Plugin<Project> {
                     type: ClojureCompileTask.class) {
                 destinationDir = set.classesDir
                 source set.clojure
-                inputRoot set.clojure.sourceDir
+                clojureRoots = set.clojure
                 compileClasspath = set.compileClasspath
                 dependsOn set.compileClasspath, project.configurations.development
                 description =

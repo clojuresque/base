@@ -53,7 +53,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
             this.jvmClosure()
             systemProperties "clojure.compile.path": this.destinationDir.path
             classpath = project.files(
-                this.inputRoots,
+                this.clojureRoots.srcDirs,
                 this.destinationDir,
                 project.configurations.development,
                 this.compileClasspath

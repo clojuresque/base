@@ -23,43 +23,54 @@
 
 package clojuresque
 
-import org.gradle.api.Project
-import org.gradle.api.file.FileTree
-
 import groovy.lang.Closure
 
-import java.io.File
+import org.gradle.api.file.FileTree
+import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.internal.file.UnionFileTree
+import org.gradle.api.internal.file.DefaultSourceDirectorySet
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.tasks.util.PatternFilterable
+import org.gradle.api.tasks.util.PatternSet
+import org.gradle.util.ConfigureUtil
 
 class ClojureSourceSet {
-    private Project project
-    private File sourceDir
-    @Delegate private FileTree sources
+    private final SourceDirectorySet clojure
+    private final UnionFileTree allClojure
+    private final PatternFilterable clojurePatterns = new PatternSet()
 
-    public ClojureSourceSet(Project project, Object dir) {
-        this.project = project
-        this.sources = project.fileTree {
-            include "**/*.clj"
-        }
-        setSourceDir(dir)
+    public ClojureSourceSet(String displayName, FileResolver fileResolver) {
+        clojure = new DefaultSourceDirectorySet(String.format("%s Clojure source", displayName), fileResolver)
+        clojure.filter.include("**/*.clj")
+        clojurePatterns.include("**/*.clj")
+        allClojure = new UnionFileTree(String.format("%s Clojure source", displayName), clojure.matching(clojurePatterns))
     }
 
-    public void setSourceDir(Object dir) {
-        this.sourceDir = project.file(dir)
-        this.sources.from this.sourceDir
+    public SourceDirectorySet getClojure() {
+        return clojure
     }
 
-    public File getSourceDir() {
-        return this.sourceDir
+    public ClojureSourceSet clojure(Closure configureClosure) {
+        ConfigureUtil.configure(configureClosure, this.clojure)
+        return this
     }
 
-    public void includeNamespace(String pattern) {
-        sources.include(
+    public PatternFilterable getClojureSourcePatterns() {
+        return clojurePatterns
+    }
+
+    public FileTree getAllClojure() {
+        return allClojure
+    }
+
+    public void clojureIncludeNamespace(String pattern) {
+        clojure.include(
             pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj"
         )
     }
 
-    public void excludeNamespace(String pattern) {
-        sources.exclude(
+    public void clojureExcludeNamespace(String pattern) {
+        clojure.exclude(
             pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj"
         )
     }

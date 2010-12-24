@@ -24,6 +24,7 @@
 package clojuresque
 
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.SourceSet
@@ -41,7 +42,7 @@ public class ClojureSourceTask extends SourceTask {
     def Closure jvmClosure = {}
     def FileCollection compileClasspath
     def File destinationDir
-    def List<Object> inputRoots = new ArrayList<Object>()
+    def SourceDirectorySet clojureRoots
 
     public ByteArrayInputStream clojureInput(String cmd) {
         return new ByteArrayInputStream(cmd.bytes)
@@ -50,11 +51,6 @@ public class ClojureSourceTask extends SourceTask {
     @OutputDirectory
     public File getDestinationDir() {
         return this.destinationDir
-    }
-
-    public ClojureCompileTask inputRoot(Object... roots) {
-        roots.each { this.inputRoots.add(it) }
-        return this
     }
 
     public ClojureCompileTask jvm(Closure closure) {
