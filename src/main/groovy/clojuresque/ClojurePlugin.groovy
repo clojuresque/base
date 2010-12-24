@@ -25,84 +25,15 @@ package clojuresque
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.dsl.RepositoryHandler
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.StopExecutionException
-import org.gradle.api.tasks.Upload
 import org.gradle.api.tasks.bundling.Jar
 
 public class ClojurePlugin implements Plugin<Project> {
     public void apply(Project project) {
-        project.apply plugin: JavaPlugin.class
-        project.apply plugin: MavenPlugin.class
+        project.apply plugin: ClojureBasePlugin.class
 
-        project.convention.plugins.clojure = new ClojurePluginConvention()
-
-        RepositoryHandler repos = project.repositories
-        repos.convention.plugins.clojure =
-            new ClojureRepositoryConvention(repos)
-
-        configureConfigurations(project)
-        configureSourceSets(project)
-        configureCompilation(project)
         configureUberjar(project)
         configureDepsTask(project)
-        configureClojarsUpload(project)
-    }
-
-    private void configureSourceSets(Project project) {
-        ProjectInternal projectInternal = (ProjectInternal)project
-
-        project.sourceSets.each { sourceSet ->
-            ClojureSourceSet clojureSourceSet =
-                new ClojureSourceSet(sourceSet.name, projectInternal.fileResolver)
-
-            sourceSet.convention.plugins.clojure = clojureSourceSet
-            sourceSet.clojure.srcDirs = [ String.format("src/%s/clojure", sourceSet.name) ]
-            sourceSet.resources.filter.exclude("**/*.clj")
-            sourceSet.allSource.add(clojureSourceSet.clojure)
-        }
-    }
-
-    private void configureCompilation(Project project) {
-        project.sourceSets.each { set ->
-            String compileTaskName = set.getCompileTaskName("clojure")
-            ClojureCompileTask task = project.tasks.add(name: compileTaskName,
-                    type: ClojureCompileTask.class) {
-                destinationDir = set.classesDir
-                source set.clojure
-                clojureRoots = set.clojure
-                compileClasspath = set.compileClasspath
-                dependsOn set.compileClasspath, project.configurations.development
-                description =
-                    String.format("Compile the %s Clojure source.",
-                            set.name)
-            }
-            project.tasks[set.classesTaskName].dependsOn task
-            set.compileClasspath = project.files(
-                set.compileClasspath,
-                project.configurations.development
-            )
-        }
-    }
-
-    private void configureConfigurations(Project project) {
-        project.configurations {
-            clojuresque {
-                transitive = false
-                visible = false
-                description = "Deprecated: Please use the development configuration"
-            }
-            development {
-                transitive = false
-                visible = false
-                description = "Development only dependencies"
-                extendsFrom clojuresque
-            }
-        }
     }
 
     private void configureUberjar(Project project) {
@@ -133,15 +64,6 @@ public class ClojurePlugin implements Plugin<Project> {
             into 'lib'
             from project.configurations.testRuntime
             from project.configurations.development
-        }
-    }
-
-    private void configureClojarsUpload(Project project) {
-        project.tasks.whenTaskAdded { upload ->
-            if (!(upload instanceof Upload))
-                return
-            upload.convention.plugins.clojure =
-                new ClojureUploadConvention(upload)
         }
     }
 }
