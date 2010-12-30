@@ -4,13 +4,27 @@ project(':clojuresque') {
         plugin 'maven'
     }
 
-    group = 'clojuresque'
-    version = '1.4.0-SNAPSHOT'
-
     dependencies {
         compile gradleApi()
         groovy localGroovy()
     }
+}
+
+project(':runtime') {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile 'org.clojure:clojure:1.+'
+    }
+}
+
+subprojects {
+    group = 'clojuresque'
+    version = '1.4.0-SNAPSHOT'
 
     uploadArchives.doLast {
         if (!project.version.endsWith("-SNAPSHOT")) {
@@ -30,3 +44,4 @@ project(':clojuresque') {
         }
     }
 }
+
