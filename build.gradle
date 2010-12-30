@@ -1,31 +1,32 @@
-apply {
-    plugin 'java'
-    plugin 'groovy'
-    plugin 'maven'
-}
+project(':clojuresque') {
+    apply {
+        plugin 'groovy'
+        plugin 'maven'
+    }
 
-group = 'clojuresque'
-version = '1.4.0-SNAPSHOT'
+    group = 'clojuresque'
+    version = '1.4.0-SNAPSHOT'
 
-dependencies {
-    compile gradleApi()
-    groovy localGroovy()
-}
+    dependencies {
+        compile gradleApi()
+        groovy localGroovy()
+    }
 
-uploadArchives.doLast {
-    if (!project.version.endsWith("-SNAPSHOT")) {
-        String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
-            project.name + "-" + project.version + ".xml"
+    uploadArchives.doLast {
+        if (!project.version.endsWith("-SNAPSHOT")) {
+            String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
+                project.name + "-" + project.version + ".xml"
 
-        project.pom().writeTo(pomName)
+            project.pom().writeTo(pomName)
 
-        project.exec {
-            commandLine(
-                '/usr/bin/scp',
-                project.file(project.tasks.jar.archivePath).path,
-                project.file(pomName).path,
-                'clojars@clojars.org:'
-            )
+            project.exec {
+                commandLine(
+                    '/usr/bin/scp',
+                    project.file(project.tasks.jar.archivePath).path,
+                    project.file(pomName).path,
+                    'clojars@clojars.org:'
+                )
+            }
         }
     }
 }
