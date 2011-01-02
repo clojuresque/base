@@ -36,7 +36,8 @@ public class ClojureBasePlugin implements Plugin<Project> {
         project.apply plugin: JavaPlugin.class
         project.apply plugin: MavenPlugin.class
 
-        project.convention.plugins.clojure = new ClojurePluginConvention()
+        project.convention.plugins.clojure =
+            new ClojurePluginConvention(project)
 
         RepositoryHandler repos = project.repositories
         repos.convention.plugins.clojure =

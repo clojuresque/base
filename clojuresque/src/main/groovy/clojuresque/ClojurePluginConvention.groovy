@@ -23,7 +23,24 @@
 
 package clojuresque
 
+import org.gradle.api.Project
+import org.gradle.process.ExecResult
+import org.gradle.util.ConfigureUtil
+
+import groovy.lang.Closure
+
 class ClojurePluginConvention {
     def boolean warnOnReflection = false
     def boolean aotCompile = false
+    final Project project
+
+    public ClojurePluginConvention(Project project) {
+        this.project = project
+    }
+
+    public ExecResult clojureexec(Closure spec) {
+        ClojureExecAction action = ConfigureUtil.configure(spec,
+            new ClojureExecAction(project.fileResolver))
+        return action.execute()
+    }
 }
