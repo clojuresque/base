@@ -71,14 +71,17 @@ public class ClojureBasePlugin implements Plugin<Project> {
             clojuresque {
                 transitive = false
                 visible = false
-                description = "Deprecated: Please use the development configuration"
+                description = "Clojuresque internal configuration. Don't use!"
             }
             development {
                 transitive = false
                 visible = false
                 description = "Development only dependencies"
-                extendsFrom clojuresque
             }
+        }
+        project.dependencies {
+            clojuresque group: "clojuresque", name: "runtime",
+                version: this.properties.getProperty("clojuresque.version")
         }
     }
 
