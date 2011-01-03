@@ -1,3 +1,8 @@
+subprojects {
+    group = 'clojuresque'
+    version = '1.4.0-SNAPSHOT'
+}
+
 project(':clojuresque') {
     apply {
         plugin 'groovy'
@@ -7,6 +12,12 @@ project(':clojuresque') {
     dependencies {
         compile gradleApi()
         groovy localGroovy()
+    }
+
+    processResources {
+        from(sourceSets.main.resources.srcDirs) {
+            expand("version": project.version)
+        }
     }
 }
 
@@ -23,9 +34,6 @@ project(':runtime') {
 }
 
 subprojects {
-    group = 'clojuresque'
-    version = '1.4.0-SNAPSHOT'
-
     uploadArchives.doLast {
         if (!project.version.endsWith("-SNAPSHOT")) {
             String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
