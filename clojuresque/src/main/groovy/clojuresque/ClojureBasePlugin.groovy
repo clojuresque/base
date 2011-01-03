@@ -31,6 +31,9 @@ import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.tasks.Upload
 
+import java.io.InputStreamReader
+import java.util.Properties
+
 public class ClojureBasePlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.apply plugin: JavaPlugin.class
@@ -47,6 +50,20 @@ public class ClojureBasePlugin implements Plugin<Project> {
         configureSourceSets(project)
         configureCompilation(project)
         configureClojarsUpload(project)
+    }
+
+    private Properties getProperties() {
+        Properties props = new Properties()
+        InputStreamReader propStream =
+            new InputStreamReader(this.class.getResourceAsStream("clojuresque.properties"), "UTF-8")
+
+        try {
+            props.load(propStream)
+        } finally {
+            propStream.close()
+        }
+
+        return props
     }
 
     private void configureConfigurations(Project project) {
