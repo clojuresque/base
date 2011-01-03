@@ -23,18 +23,41 @@
 
 package clojuresque;
 
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.FileResolver;
 import org.gradle.process.ExecResult;
 import org.gradle.process.internal.ExecHandle;
 import org.gradle.process.internal.JavaExecAction;
 import org.gradle.process.internal.JavaExecHandleBuilder;
+import org.gradle.util.GUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClojureExecAction extends JavaExecHandleBuilder implements JavaExecAction {
-    public ClojureExecAction(FileResolver fileResolver) {
+    FileCollection driverClasspath;
+
+    public ClojureExecAction(FileResolver fileResolver, FileCollection driver) {
         super(fileResolver);
+        this.driverClasspath = driver;
+    }
+
+    @Override
+    public List<String> getAllJvmArgs() {
+        List<String> allArgs = super.getAllJvmArgs();
+        String driver = GUtil.join(driverClasspath.getFiles(), File.pathSeparator);
+
+        int pos = allArgs.indexOf("-cp") + 1;
+        if (pos > 0) {
+            String oldClasspath = allArgs.remove(pos);
+            allArgs.add(pos, oldClasspath + File.pathSeparator + driver);
+        } else {
+            allArgs.add("-cp");
+            allArgs.add(driver);
+        }
+
+        return allArgs;
     }
 
     @Override
