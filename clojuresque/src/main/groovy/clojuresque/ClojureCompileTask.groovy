@@ -23,23 +23,26 @@
 
 package clojuresque
 
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
+import java.io.File
 import java.io.InputStream
 
-public class ClojureCompileTask extends ClojureSourceTask {
-    public InputStream compileOrRequire() {
-        String cmd = String.format(
-            this.class.getResourceAsStream("ClojureCompileDriver.clj").text,
-            source.collect {
-                String.format("(java.io.File. \"%s\")",
-                    it.path.replace("\\", "\\\\"))
-            }.join(" "),
-            project.aotCompile ? "compile" : "require"
-        )
+import groovy.lang.Closure
 
-        return clojureInput(cmd)
+public class ClojureCompileTask extends ClojureSourceTask {
+    def File destinationDir
+    def FileCollection compileClasspath
+    def SourceDirectorySet clojureRoots
+    def Closure jvmOptions = {}
+
+    @OutputDirectory
+    public File getDestinationDir() {
+        return this.destinationDir
     }
 
     @TaskAction
@@ -49,18 +52,25 @@ public class ClojureCompileTask extends ClojureSourceTask {
         }
         destinationDir.mkdirs()
 
-        project.javaexec {
-            this.jvmClosure()
+        List<String> options = []
+        if (project.aotCompile) {
+            options.add("--compile")
+        }
+        if (project.warnOnReflection) {
+            options.add("--warn-on-reflection")
+        }
+
+
+        project.clojureexec {
+            this.jvmOptions()
             systemProperties "clojure.compile.path": this.destinationDir.path
             classpath = project.files(
                 this.clojureRoots.srcDirs,
                 this.destinationDir,
-                project.configurations.development,
                 this.compileClasspath
             )
-            main = "clojure.main"
-            args = [ "-" ]
-            standardInput = this.compileOrRequire()
+            main = "clojuresque.tasks.compile/main"
+            args = options + this.source.files
         }
 
         if (!project.aotCompile) {

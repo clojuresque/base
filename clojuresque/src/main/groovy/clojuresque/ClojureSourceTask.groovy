@@ -23,48 +23,16 @@
 
 package clojuresque
 
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.StopExecutionException
-import org.gradle.api.tasks.TaskAction
-
-import groovy.lang.Closure
-
-import java.io.File
-import java.io.ByteArrayInputStream
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClojureSourceTask extends SourceTask {
-    def Closure jvmClosure = {}
-    def FileCollection compileClasspath
-    def File destinationDir
-    def SourceDirectorySet clojureRoots
-
-    public ByteArrayInputStream clojureInput(String cmd) {
-        return new ByteArrayInputStream(cmd.bytes)
-    }
-
-    @OutputDirectory
-    public File getDestinationDir() {
-        return this.destinationDir
-    }
-
-    public ClojureCompileTask jvm(Closure closure) {
-        this.jvmClosure = closure
-        return this
-    }
-
     /* Duplicate the functionality of ClojureSourceSet. */
-    public ClojureCompileTask includeNamespace(String pattern) {
+    public ClojureSourceTask includeNamespace(String pattern) {
         include(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
         return this
     }
 
-    public ClojureCompileTask excludeNamespace(String pattern) {
+    public ClojureSourceTask excludeNamespace(String pattern) {
         exclude(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
         return this
     }
