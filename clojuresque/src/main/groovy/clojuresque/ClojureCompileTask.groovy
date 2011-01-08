@@ -55,6 +55,8 @@ public class ClojureCompileTask extends ClojureSourceTask {
         List<String> options = []
         if (project.aotCompile) {
             options.add("--compile")
+        } else {
+            options.add("--require")
         }
         if (project.warnOnReflection) {
             options.add("--warn-on-reflection")

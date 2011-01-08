@@ -1,4 +1,6 @@
-(ns clojuresque.tasks.compile)
+(ns clojuresque.tasks.compile
+  (:use
+    clojuresque.cli))
 
 (defn find-namespace
   [file]
@@ -16,16 +18,24 @@
     (when candidate
       (second candidate))))
 
-(defn main
-  [args]
-  (let [[mode args] (if (= (first args) "--compile")
-                      [compile (next args)]
-                      [require args])
-        [warn args] (if (= (first args) "--warn-on-reflection")
-                      [true  (next args)]
-                      [false args])
-        namespaces  (map find-namespace args)]
-    (binding [*warn-on-reflection* warn
+(deftask main
+  "Compile (or at least require) the namespaces contained in the named
+  files. Optionally reflection warnings might be emitted."
+  [[compile?            c "Compile the namespaces."]
+   [require?            r "Require the namespaces."]
+   [warn-on-reflection? w "Turn on reflections warnings."]
+   files]
+  (let [mode (cond
+               compile clojure.core/compile
+               require clojure.core/require
+               :else   (throw
+                         (Exception.
+                           "You must choose a mode: compile or require.")))
+        seen (atom #{})
+        namespaces (map find-namespace files)]
+    (binding [*warn-on-reflection* warn-on-reflection
               *compile-path*       (System/getProperty "clojure.compile.path")]
-      (doseq [nspace namespaces :when nspace]
+      (doseq [nspace namespaces
+              :when  (and nspace (not (contains? @seen nspace)))]
+        (swap! seen conj nspace)
         (mode nspace)))))
