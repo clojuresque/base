@@ -49,6 +49,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
         configureConfigurations(project)
         configureSourceSets(project)
         configureCompilation(project)
+        configureTests(project)
         configureClojarsUpload(project)
     }
 
@@ -101,6 +102,8 @@ public class ClojureBasePlugin implements Plugin<Project> {
 
     private void configureCompilation(Project project) {
         project.sourceSets.each { set ->
+            if (set.equals(project.sourceSets.test))
+                return
             String compileTaskName = set.getCompileTaskName("clojure")
             ClojureCompileTask task = project.tasks.add(name: compileTaskName,
                     type: ClojureCompileTask.class) {
@@ -119,6 +122,19 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 project.configurations.development
             )
         }
+    }
+
+    private void configureTests(Project project) {
+        ClojureTestTask clojureTest = project.tasks.add(name: "clojureTest",
+                type: ClojureTestTask.class) {
+            source project.sourceSets.test.clojure
+            testRoots = project.sourceSets.test.clojure
+            testClasspath = project.configurations.testRuntime
+            classesDir = project.sourceSets.main.classesDir
+            dependsOn project.tasks.classes, project.configurations.testRuntime
+            description = "Run Clojure tests in src/test."
+        }
+        project.tasks.test.dependsOn clojureTest
     }
 
     private void configureClojarsUpload(Project project) {
