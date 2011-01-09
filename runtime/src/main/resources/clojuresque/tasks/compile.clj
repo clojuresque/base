@@ -1,22 +1,7 @@
 (ns clojuresque.tasks.compile
   (:use
-    clojuresque.cli))
-
-(defn find-namespace
-  [file]
-  (let [of-interest '#{ns clojure.core/ns}
-        eof         (Object.)
-        input       (clojure.lang.LineNumberingPushbackReader.
-                      (java.io.FileReader. file))
-        in-seq      (take-while #(not (identical? % eof))
-                                (repeatedly #(read input false eof)))
-        candidate   (first
-                      (drop-while
-                        #(or (not (instance? clojure.lang.ISeq %))
-                             (not (contains? of-interest (first %))))
-                        in-seq))]
-    (when candidate
-      (second candidate))))
+    [clojuresque.cli :only (deftask)]
+    [clojuresque.util :only (namespaces)]))
 
 (deftask main
   "Compile (or at least require) the namespaces contained in the named
@@ -31,11 +16,8 @@
                :else   (throw
                          (Exception.
                            "You must choose a mode: compile or require.")))
-        seen (atom #{})
-        namespaces (map find-namespace files)]
+        namespaces (namespaces files)]
     (binding [*warn-on-reflection* warn-on-reflection
               *compile-path*       (System/getProperty "clojure.compile.path")]
-      (doseq [nspace namespaces
-              :when  (and nspace (not (contains? @seen nspace)))]
-        (swap! seen conj nspace)
+      (doseq [nspace namespaces]
         (mode nspace)))))
