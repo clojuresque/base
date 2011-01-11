@@ -133,6 +133,9 @@ public class ClojureBasePlugin implements Plugin<Project> {
             classesDir = project.sourceSets.main.classesDir
             dependsOn project.tasks.classes, project.configurations.testRuntime
             description = "Run Clojure tests in src/test."
+            if (project.hasProperty("clojuresque.test.vars")) {
+                tests = project.getProperty("clojuresque.test.vars").split(",")
+            }
         }
         project.tasks.test.dependsOn clojureTest
     }
