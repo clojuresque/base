@@ -37,6 +37,7 @@ public class ClojureTestTask extends ClojureSourceTask {
     def FileCollection testClasspath
     def SourceDirectorySet testRoots
     def Closure jvmOptions = {}
+    def List<String> tests = []
 
     @TaskAction
     public void runTests() {
@@ -47,8 +48,13 @@ public class ClojureTestTask extends ClojureSourceTask {
                 this.classesDir,
                 this.testClasspath
             )
-            main = "clojuresque.tasks.test/main"
-            args = this.source.files
+            if (tests.size() == 0) {
+                main = "clojuresque.tasks.test/test-namespaces"
+                args = this.source.files
+            } else {
+                main = "clojuresque.tasks.test/test-vars"
+                args = tests
+            }
         }
     }
 }
