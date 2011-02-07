@@ -36,6 +36,9 @@ public class Driver {
         final String function  = command.substring(slash + 1);
 
         RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
-        RT.var(namespace, function).invoke(RT.next(RT.seq(args)));
+        RT.var("clojure.core", "apply").invoke(
+                RT.var(namespace, function).deref(),
+                RT.next(RT.seq(args))
+        );
     }
 }

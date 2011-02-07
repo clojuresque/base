@@ -136,7 +136,7 @@
   [name description options & body]
   `(defn ~name
      ~description
-     [args#]
+     [& args#]
      (with-command-line args#
        ~description
        ~options
