@@ -22,7 +22,10 @@ project(':clojuresque') {
 }
 
 project(':runtime') {
-    apply plugin: 'java'
+    apply {
+        plugin 'java'
+        plugin 'maven'
+    }
 
     repositories {
         mavenCentral()
