@@ -22,7 +22,10 @@ project(':clojuresque') {
 }
 
 project(':runtime') {
-    apply plugin: 'java'
+    apply {
+        plugin 'java'
+        plugin 'maven'
+    }
 
     repositories {
         mavenCentral()
@@ -35,20 +38,18 @@ project(':runtime') {
 
 subprojects {
     uploadArchives.doLast {
-        if (!project.version.endsWith("-SNAPSHOT")) {
-            String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
-                project.name + "-" + project.version + ".xml"
+        String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
+            project.name + "-" + project.version + ".xml"
 
-            project.pom().writeTo(pomName)
+        project.pom().writeTo(pomName)
 
-            project.exec {
-                commandLine(
-                    '/usr/bin/scp',
-                    project.file(project.tasks.jar.archivePath).path,
-                    project.file(pomName).path,
-                    'clojars@clojars.org:'
-                )
-            }
+        project.exec {
+            commandLine(
+                '/usr/bin/scp',
+                project.file(project.tasks.jar.archivePath).path,
+                project.file(pomName).path,
+                'clojars@clojars.org:'
+            )
         }
     }
 }

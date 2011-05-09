@@ -96,7 +96,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             sourceSet.convention.plugins.clojure = clojureSourceSet
             sourceSet.clojure.srcDirs = [ String.format("src/%s/clojure", sourceSet.name) ]
             sourceSet.resources.filter.exclude("**/*.clj")
-            sourceSet.allSource.add(clojureSourceSet.clojure)
+            sourceSet.allSource.source(clojureSourceSet.clojure)
         }
     }
 
