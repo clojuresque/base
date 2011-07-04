@@ -45,27 +45,26 @@ that gradle derives the project name from the name of this directory!*
             mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
         }
         dependencies {
-            classpath 'clojuresque:clojuresque:1.2.0'
+            classpath 'clojuresque:clojuresque:1.4.1'
         }
     }
     
     group = 'example.group'
     version = '1.0.0'
     
-    usePlugin(cojuresque.ClojurePlugin)
+    apply plugin: 'clojure'
     
     warnOnReflection = true
     aotCompile = true
     
-    clojureSnapshotsRepo(repositories)
-    clojarsRepo(repositories)
-    gradleHomeRepo(repositories)
-    
-    dependencies {
-        compile 'org.clojure:clojure:1.1.0-master-SNAPSHOT'
+    repositories {
+        mavenCentral()
+        clojarsRepo()
     }
     
-    configureClojarsDeploy(uploadArchives)
+    dependencies {
+        compile 'org.clojure:clojure:1.2.1'
+    }
 
 A small walkthrough:
 
@@ -73,43 +72,25 @@ A small walkthrough:
   clojuresque from Clojars.
 * The `group` and `version` properties define the respective attributes of
   your project. They are required for the POM generation.
-* `usePlugin` basically loads the clojure plugin.
+* `apply` basically loads the clojure plugin.
 * `warnOnReflection` turns on the reflection warnings of the clojure compiler
 * `aotCompile` specifies whether to produce a source jar or an AOT compiled
   jar. The default is produce a source jar, because they also tend to be
   smaller. [This issue was discussed on the Google group.][aot]
-* `clojureSnapshotsRepo` tells gradle where to find the clojure and contrib
-  snapshots, ie. where it can find the [Hudson server][hudson].
-* `clojarsRepo` adds the [Clojars Repository][cr] in a similar way.
-* `gradleHomeRepo` is used to add `${GRADLE_HOME}/lib` as a local repository.
-  This is useful to minimise the download of the scp ant task dependencies.
-  *Note that `GRADLE_HOME` must be set for this to work!* *Note, that this
-  must come before a possible `mavenCentral()`!*
-* In the `dependencies` section we add a dependency on the current master
-  SNAPSHOT.
-* Last but not least: `configureClojarsDeploy` configures the given `Upload`
-  task to deploy to the [Clojars Repository][cr]
-
-This can be even more simplified by registering clojuresque with your local
-Gradle installation. Put the clojuresque jar in `${GRADLE_HOME}/lib` and add
-the following line to `${GRADLE_HOME}/plugin.properties`:
-
-    clojure=clojuresque.ClojurePlugin
-
-From now on you can skip the whole `buildscript` stuff and just use
-`usePlugin('clojure')` to load the plugin.
+* `clojarsRepo` adds the [Clojars Repository][cr].
+* In the `dependencies` section we add a dependency on clojure.
 
 ## Filter
 
 In the filesets you can specify filters with `include` resp. `exclude`.
 This is fine for mostly file based languages. However clojure is strongly
 based on namespaces. Therefor the clojure part of the source sets support
-also `includeNamespace` and `excludeNamespace` which can be used to filter
-on the namespace name. Eg. to exclude examples from the final jar one
-could use
+also `clojureIncludeNamespace` and `clojureExcludeNamespace` which can be
+used to filter on the namespace name. Eg. to exclude examples from the
+final jar one could use
 
     sourceSets.main.clojure {
-        excludeNamespace 'my.project.examples.**.*'
+        clojureExcludeNamespace 'my.project.examples.**.*'
     }
 
 ## Clojars Deployment
@@ -118,12 +99,12 @@ could use
 work on Windows! Make sure you have an agent running which handles your
 clojars key.**
 
-## Überjars
+## Uberjars
 
-As Leiningen, Clojuresque now supports überjars. That means you can enable
-the `ueberjar` task with
+As Leiningen, Clojuresque now supports uberjars. That means you can enable
+the `uberjar` task with
 
-    ueberjar.enabled = true
+    uberjar.enabled = true
 
 Then invoking `gradle ueberjar` will create a jar file with all runtime
 dependencies included.
@@ -132,6 +113,8 @@ dependencies included.
 
 This is **alpha** software! Expect problems! Please report issues in the
 bugtracker at [the lighthouse tracker][lh]. Or email them to me.
+
+General support is available on the [clojuresque google group][cgg].
 
 -- 
 Meikel Brandmeyer <mb@kotka.de>
@@ -146,3 +129,4 @@ Frankfurt am Main, January 2010
 [hudson]: http://build.clojure.org
 [antbug]: https://issues.apache.org/bugzilla/show_bug.cgi?id=41090
 [aot]:    http://groups.google.com/group/clojure/browse_thread/thread/6cef4fcf523f936/3cfe17ba2d2a8a23
+[cgg]:    https://groups.google.com/forum/#!forum/clojuresque
