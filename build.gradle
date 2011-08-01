@@ -1,6 +1,6 @@
 subprojects {
     group = 'clojuresque'
-    version = '1.4.1'
+    version = '1.4.2-SNAPSHOT'
 }
 
 project(':clojuresque') {
