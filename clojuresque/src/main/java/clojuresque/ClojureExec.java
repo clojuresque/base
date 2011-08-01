@@ -47,7 +47,7 @@ public class ClojureExec extends ConventionTask implements JavaExecSpec {
     }
 
     @TaskAction
-    public void execute() {
+    void exec() {
         clojureExecAction.execute();
     }
 
