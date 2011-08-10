@@ -11,6 +11,8 @@ project(':clojuresque') {
 
     dependencies {
         compile gradleApi()
+        // Workaround for milestone4
+        compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: '**/*.jar')
         groovy localGroovy()
     }
 
