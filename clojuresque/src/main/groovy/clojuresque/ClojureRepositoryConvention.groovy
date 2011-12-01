@@ -33,16 +33,6 @@ class ClojureRepositoryConvention {
         this.repos = repos
     }
 
-    public void clojureSnapshotsRepo() {
-        repos.mavenRepo name: 'clojureSnapshots',
-            urls: 'http://build.clojure.org/snapshots'
-    }
-
-    public void clojureReleasesRepo() {
-        repos.mavenRepo name: 'clojureReleases',
-            urls: 'http://build.clojure.org/releases'
-    }
-
     public void clojarsRepo() {
         repos.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
     }
