@@ -34,6 +34,6 @@ class ClojureRepositoryConvention {
     }
 
     public void clojarsRepo() {
-        repos.mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
+        repos.maven { url 'http://clojars.org/repo' }
     }
 }
