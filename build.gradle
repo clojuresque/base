@@ -34,13 +34,13 @@ project(':runtime') {
     }
 
     dependencies {
-        compile 'org.clojure:clojure:1.+'
+        compile 'org.clojure:clojure:[1.2,1.4)'
     }
 }
 
 subprojects {
     uploadArchives.doLast {
-        String pomName = project.buildDirName + "/" + project.pomDirName + "/" +
+        String pomName = project.buildDirName + "/" + project.mavenPomDir.name + "/" +
             project.name + "-" + project.version + ".xml"
 
         project.pom().writeTo(pomName)

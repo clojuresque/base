@@ -36,7 +36,7 @@ class ClojureUploadConvention {
     public void clojarsDeploy() {
         upload.doLast {
             String pomName = project.buildDirName + "/" +
-                project.pomDirName + "/" +
+                project.mavenPomDir.name + "/" +
                 "pom-" + upload.configuration.name + ".xml"
 
             project.pom().writeTo(pomName)

@@ -107,7 +107,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             String compileTaskName = set.getCompileTaskName("clojure")
             ClojureCompileTask task = project.tasks.add(name: compileTaskName,
                     type: ClojureCompileTask.class) {
-                destinationDir = set.classesDir
+                destinationDir = set.output.classesDir
                 source set.clojure
                 clojureRoots = set.clojure
                 compileClasspath = set.compileClasspath
@@ -130,7 +130,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             source project.sourceSets.test.clojure
             testRoots = project.sourceSets.test.clojure
             testClasspath = project.configurations.testRuntime
-            classesDir = project.sourceSets.main.classesDir
+            classesDir = project.sourceSets.main.output.classesDir
             dependsOn project.tasks.classes, project.configurations.testRuntime
             description = "Run Clojure tests in src/test."
             if (project.hasProperty("clojuresque.test.vars")) {
