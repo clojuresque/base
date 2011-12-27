@@ -49,6 +49,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
         configureConfigurations(project)
         configureSourceSets(project)
         configureCompilation(project)
+        configureDocs(project)
         configureTests(project)
         configureClojarsUpload(project)
     }
@@ -121,6 +122,27 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 set.compileClasspath,
                 project.configurations.development
             )
+        }
+    }
+
+    private void configureDocs(Project project) {
+        project.sourceSets.each { set ->
+            if (set.equals(project.sourceSets.test))
+                return
+            String docTaskName = set.getTaskName(null, "clojuredoc")
+            ClojureDocTask task = project.tasks.add(name: docTaskName,
+                    type: ClojureDocTask.class) {
+                destinationDir = project.file(
+                    project.docsDir.path + "/clojuredoc"
+                )
+                source set.clojure
+                clojureRoots = set.clojure
+                compileClasspath = set.compileClasspath
+                dependsOn set.compileClasspath
+                description =
+                    String.format("Generate documentation for the %s Clojure source.",
+                            set.name)
+            }
         }
     }
 
