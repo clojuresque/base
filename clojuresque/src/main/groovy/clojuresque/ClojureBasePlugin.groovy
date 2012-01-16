@@ -111,7 +111,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 destinationDir = set.output.classesDir
                 source set.clojure
                 clojureRoots = set.clojure
-                compileClasspath = set.compileClasspath
+                classpath = set.compileClasspath
                 dependsOn set.compileClasspath, project.configurations.development
                 description =
                     String.format("Compile the %s Clojure source.",
@@ -137,7 +137,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 )
                 source set.clojure
                 clojureRoots = set.clojure
-                compileClasspath = set.compileClasspath
+                classpath = set.compileClasspath
                 dependsOn set.compileClasspath
                 description =
                     String.format("Generate documentation for the %s Clojure source.",
@@ -151,7 +151,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 type: ClojureTestTask.class) {
             source project.sourceSets.test.clojure
             testRoots = project.sourceSets.test.clojure
-            testClasspath = project.configurations.testRuntime
+            classpath = project.configurations.testRuntime
             classesDir = project.sourceSets.main.output.classesDir
             dependsOn project.tasks.classes, project.configurations.testRuntime
             description = "Run Clojure tests in src/test."

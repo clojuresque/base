@@ -35,18 +35,18 @@ import groovy.lang.Closure
 
 public class ClojureTestTask extends ClojureSourceTask {
     def File classesDir
-    def FileCollection testClasspath
+    def FileCollection classpath
     def SourceDirectorySet testRoots
     def Closure jvmOptions = {}
     def List<String> tests = []
 
     @InputFiles
     public FileCollection getTestClasspath() {
-        return this.testClasspath
+        return this.classpath
     }
 
-    public void testClasspath(Object... coll) {
-        testClasspath = testClasspath.plus(project.files(coll))
+    public void classpath(Object... coll) {
+        classpath = classpath.plus(project.files(coll))
     }
 
     @TaskAction
@@ -56,7 +56,7 @@ public class ClojureTestTask extends ClojureSourceTask {
             classpath = project.files(
                 this.testRoots.srcDirs,
                 this.classesDir,
-                this.testClasspath
+                this.classpath
             )
             if (tests.size() == 0) {
                 main = "clojuresque.tasks.test/test-namespaces"

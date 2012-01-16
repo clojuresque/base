@@ -37,7 +37,7 @@ import groovy.lang.Closure
 
 public class ClojureDocTask extends ClojureSourceTask {
     def File destinationDir
-    def FileCollection compileClasspath
+    def FileCollection classpath
     def SourceDirectorySet clojureRoots
     def Closure jvmOptions = {}
 
@@ -47,12 +47,12 @@ public class ClojureDocTask extends ClojureSourceTask {
     }
 
     @InputFiles
-    public FileCollection getCompileClasspath() {
-        return this.compileClasspath
+    public FileCollection getClasspath() {
+        return this.classpath
     }
 
-    public void compileClasspath(Object... coll) {
-        compileClasspath = compileClasspath.plus(project.files(coll))
+    public void classpath(Object... coll) {
+        classpath = classpath.plus(project.files(coll))
     }
 
     @TaskAction
@@ -65,7 +65,7 @@ public class ClojureDocTask extends ClojureSourceTask {
             this.jvmOptions()
             classpath = project.files(
                 this.clojureRoots.srcDirs,
-                this.compileClasspath
+                this.classpath
             )
             main = "clojuresque.tasks.doc/main"
             args = [
