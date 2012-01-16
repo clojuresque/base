@@ -25,6 +25,7 @@ package clojuresque
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
@@ -43,6 +44,15 @@ public class ClojureDocTask extends ClojureSourceTask {
     @OutputDirectory
     public File getDestinationDir() {
         return this.destinationDir
+    }
+
+    @InputFiles
+    public FileCollection getCompileClasspath() {
+        return this.compileClasspath
+    }
+
+    public void compileClasspath(Object... coll) {
+        compileClasspath = compileClasspath.plus(project.files(coll))
     }
 
     @TaskAction
