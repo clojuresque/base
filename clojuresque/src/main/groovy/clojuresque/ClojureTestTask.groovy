@@ -25,6 +25,7 @@ package clojuresque
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 
 import java.io.File
@@ -38,6 +39,15 @@ public class ClojureTestTask extends ClojureSourceTask {
     def SourceDirectorySet testRoots
     def Closure jvmOptions = {}
     def List<String> tests = []
+
+    @InputFiles
+    public FileCollection getTestClasspath() {
+        return this.testClasspath
+    }
+
+    public void testClasspath(Object... coll) {
+        testClasspath = testClasspath.plus(project.files(coll))
+    }
 
     @TaskAction
     public void runTests() {
