@@ -46,7 +46,7 @@ public class ClojureTestTask extends ClojureSourceTask {
     }
 
     public void classpath(Object... coll) {
-        classpath = classpath.plus(project.files(coll))
+        classpath.from(coll)
     }
 
     @TaskAction

@@ -52,7 +52,7 @@ public class ClojureDocTask extends ClojureSourceTask {
     }
 
     public void classpath(Object... coll) {
-        classpath = classpath.plus(project.files(coll))
+        classpath.from(coll)
     }
 
     @TaskAction
