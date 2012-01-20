@@ -111,17 +111,15 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 destinationDir = set.output.classesDir
                 source set.clojure
                 clojureRoots = set.clojure
-                classpath = set.compileClasspath
-                dependsOn set.compileClasspath, project.configurations.development
+                classpath = project.files(
+                    set.compileClasspath,
+                    project.configurations.development
+                )
                 description =
                     String.format("Compile the %s Clojure source.",
                             set.name)
             }
             project.tasks[set.classesTaskName].dependsOn task
-            set.compileClasspath = project.files(
-                set.compileClasspath,
-                project.configurations.development
-            )
         }
     }
 
