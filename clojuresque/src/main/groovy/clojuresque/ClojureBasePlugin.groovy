@@ -127,7 +127,9 @@ public class ClojureBasePlugin implements Plugin<Project> {
         project.sourceSets.each { set ->
             if (set.equals(project.sourceSets.test))
                 return
+            String compileTaskName = set.getCompileTaskName("clojure")
             String docTaskName = set.getTaskName(null, "clojuredoc")
+            ClojureCompileTask compileTask = project.tasks[compileTaskName]
             ClojureDocTask task = project.tasks.add(name: docTaskName,
                     type: ClojureDocTask.class) {
                 destinationDir = project.file(
@@ -135,8 +137,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 )
                 source set.clojure
                 clojureRoots = set.clojure
-                classpath = set.compileClasspath
-                dependsOn set.compileClasspath
+                classpath = compileTask.classpath
                 description =
                     String.format("Generate documentation for the %s Clojure source.",
                             set.name)
