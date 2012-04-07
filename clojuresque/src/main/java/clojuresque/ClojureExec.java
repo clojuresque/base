@@ -119,6 +119,14 @@ public class ClojureExec extends ConventionTask implements JavaExecSpec {
         clojureExecAction.setMaxHeapSize(heapSize);
     }
 
+    public String getMinHeapSize() {
+        return clojureExecAction.getMinHeapSize();
+    }
+
+    public void setMinHeapSize(String heapSize) {
+        clojureExecAction.setMinHeapSize(heapSize);
+    }
+
     public boolean getEnableAssertions() {
         return clojureExecAction.getEnableAssertions();
     }
