@@ -25,6 +25,7 @@ package clojuresque;
 
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.FileResolver;
+import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.internal.ConventionTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.JavaExecSpec;
@@ -41,8 +42,10 @@ public class ClojureExec extends ConventionTask implements JavaExecSpec {
     private ClojureExecAction clojureExecAction;
 
     public ClojureExec() {
+        super();
+
         FileCollection driverConf = getProject().getConfigurations().getByName("clojuresque");
-        FileResolver fileResolver = getServices().get(FileResolver.class);
+        FileResolver fileResolver = ((ProjectInternal)getProject()).getFileResolver();
         clojureExecAction = new ClojureExecAction(fileResolver, driverConf);
     }
 
