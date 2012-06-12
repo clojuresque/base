@@ -13,6 +13,6 @@
   (let [project {:name        name
                  :version     version
                  :description description
-                 :destination destination
+                 :output-dir  destination
                  :sources     sources}]
     (generate-docs project)))

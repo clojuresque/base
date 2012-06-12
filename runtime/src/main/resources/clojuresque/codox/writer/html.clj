@@ -1,12 +1,15 @@
 (ns clojuresque.codox.writer.html
   "Documentation writer that outputs HTML."
-  (:use [clojuresque.hiccup core page-helpers])
+  (:use [clojuresque.hiccup core page element])
   (:import java.net.URLEncoder)
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
 
 (defn- ns-filename [namespace]
   (str (:name namespace) ".html"))
+
+(defn- ns-filepath [output-dir namespace]
+  (str output-dir "/" (ns-filename namespace)))
 
 (defn- var-id [var]
   (str "var-" (URLEncoder/encode (str (:name var)))))
@@ -15,14 +18,14 @@
   (str (ns-filename namespace) "#" (var-id var)))
 
 (defn- link-to-ns [namespace]
-  (link-to (ns-filename namespace) (h (:name namespace))))
+  (link-to (ns-filename namespace) [:span (h (:name namespace))]))
 
 (defn- link-to-var [namespace var]
-  (link-to (var-uri namespace var) (h (:name var))))
+  (link-to (var-uri namespace var) [:span (h (:name var))]))
 
 (defn- namespaces-menu [project & [namespace]]
   [:div#namespaces.sidebar
-   [:h3 "Namespaces"]
+   [:h3 [:span "Namespaces"]]
    [:ul
     (for [ns (:namespaces project)]
       (if (= ns namespace)
@@ -99,31 +102,31 @@
            [:code (h (pr-str form))])]
         [:pre.doc (h (:doc var))]])]]))
 
-(defn- copy-resource [src dest]
+(defn- copy-resource [output-dir src dest]
   (io/copy (io/input-stream (io/resource src))
-           (io/file dest)))
+           (io/file output-dir dest)))
 
-(defn- mkdirs [& dirs]
+(defn- mkdirs [output-dir & dirs]
   (doseq [dir dirs]
-    (.mkdirs (io/file dir))))
+    (.mkdirs (io/file output-dir dir))))
 
-(defn- destination
-  [project]
-  (fn [dir]
-    (str (:destination project) "/" dir)))
+(defn- write-index [output-dir project]
+  (spit (io/file output-dir "index.html") (index-page project)))
+
+(defn- write-namespaces
+  [output-dir project]
+  (doseq [namespace (:namespaces project)]
+    (spit (ns-filepath output-dir namespace)
+          (namespace-page project namespace))))
 
 (defn write-docs
   "Take raw documentation info and turn it into formatted HTML."
   [project]
-  (let [destination (destination project)]
-    (mkdirs (destination "css") (destination "js"))
-    (doseq [[from to] (map (juxt (partial str "clojuresque/codox/")
-                                 destination)
-                           ["css/default.css"
-                            "js/jquery.min.js"
-                            "js/page_effects.js"])]
-      (copy-resource from to))
-    (spit (destination "index.html") (index-page project))
-    (doseq [namespace (:namespaces project)]
-      (spit (destination (ns-filename namespace))
-            (namespace-page project namespace)))))
+  (doto (:output-dir project "doc")
+    (mkdirs "css" "js")
+    (copy-resource "clojuresque/codox/css/default.css" "css/default.css")
+    (copy-resource "clojuresque/codox/js/jquery.min.js" "js/jquery.min.js")
+    (copy-resource "clojuresque/codox/js/page_effects.js" "js/page_effects.js")
+    (write-index project)
+    (write-namespaces project))
+  nil)
