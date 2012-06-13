@@ -278,4 +278,12 @@ public class ClojureExec extends ConventionTask implements JavaExecSpec {
     public List<String> getCommandLine() {
         return clojureExecAction.getCommandLine();
     }
+
+    public void setDefaultCharacterEncoding(String defaultCharacterEncoding) {
+        clojureExecAction.setDefaultCharacterEncoding(defaultCharacterEncoding);
+    }
+
+    public String getDefaultCharacterEncoding() {
+        return clojureExecAction.getDefaultCharacterEncoding();
+    }
 }
