@@ -51,10 +51,6 @@ public class ClojureCompileTask extends ClojureSourceTask {
         return this.classpath
     }
 
-    public void classpath(Object... coll) {
-        classpath.from(coll)
-    }
-
     @TaskAction
     public void compile() {
         if (destinationDir == null) {

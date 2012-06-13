@@ -45,10 +45,6 @@ public class ClojureTestTask extends ClojureSourceTask {
         return this.classpath
     }
 
-    public void classpath(Object... coll) {
-        classpath.from(coll)
-    }
-
     @TaskAction
     public void runTests() {
         project.clojureexec {
