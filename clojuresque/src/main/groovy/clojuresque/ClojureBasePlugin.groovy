@@ -82,7 +82,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             }
         }
         project.dependencies {
-            clojuresque group: "clojuresque", name: "runtime",
+            clojuresque group: "clojuresque", name: "clojuresque-runtime",
                 version: this.properties.getProperty("clojuresque.version")
         }
     }

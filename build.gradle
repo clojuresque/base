@@ -20,7 +20,7 @@ project(':clojuresque') {
     }
 }
 
-project(':runtime') {
+project(':clojuresque-runtime') {
     apply plugin: 'java'
 
     repositories {
