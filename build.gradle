@@ -49,6 +49,18 @@ project(':scriptoresque') {
     }
 }
 
+project(':scriptoresque-runtime') {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile project(':clojuresque-runtime')
+    }
+}
+
 subprojects {
     apply plugin: 'maven'
 

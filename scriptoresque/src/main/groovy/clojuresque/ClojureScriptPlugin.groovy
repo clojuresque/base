@@ -31,7 +31,15 @@ public class ClojureScriptPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.apply plugin: ClojureBasePlugin.class
 
+        configureConfigurations(project)
         configureSourceSets(project)
+    }
+
+    private void configureConfigurations(Project project) {
+        project.dependencies {
+            clojuresque group: "clojuresque", name: "scriptoresque-runtime",
+                version: Util.properties.getProperty("clojuresque.version")
+        }
     }
 
     private void configureSourceSets(Project project) {
