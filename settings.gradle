@@ -1,3 +1,4 @@
 rootProject.name = 'root'
 include 'clojuresque'
 include 'runtime'
+include 'scriptoresque'

@@ -4,10 +4,7 @@ subprojects {
 }
 
 project(':clojuresque') {
-    apply {
-        plugin 'groovy'
-        plugin 'maven'
-    }
+    apply plugin: 'groovy'
 
     dependencies {
         compile gradleApi()
@@ -24,10 +21,7 @@ project(':clojuresque') {
 }
 
 project(':runtime') {
-    apply {
-        plugin 'java'
-        plugin 'maven'
-    }
+    apply plugin: 'java'
 
     repositories {
         mavenCentral()
@@ -38,7 +32,26 @@ project(':runtime') {
     }
 }
 
+project(':scriptoresque') {
+    apply plugin: 'groovy'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile gradleApi()
+        // Workaround for milestone4
+        compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: '**/*.jar')
+        compile project(':clojuresque')
+
+        groovy localGroovy()
+    }
+}
+
 subprojects {
+    apply plugin: 'maven'
+
     uploadArchives.doLast {
         String pomFile = project.buildDir.path + "/" +
             project.mavenPomDir.name + "/" +
