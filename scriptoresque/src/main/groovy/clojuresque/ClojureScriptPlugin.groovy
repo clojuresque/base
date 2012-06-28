@@ -33,6 +33,7 @@ public class ClojureScriptPlugin implements Plugin<Project> {
 
         configureConfigurations(project)
         configureSourceSets(project)
+        configureCompilation(project)
     }
 
     private void configureConfigurations(Project project) {
@@ -53,6 +54,32 @@ public class ClojureScriptPlugin implements Plugin<Project> {
             sourceSet.clojureScript.srcDirs = [ String.format("src/%s/cljs", sourceSet.name) ]
             sourceSet.resources.filter.exclude("**/*.cljs")
             sourceSet.allSource.source(clojureScriptSourceSet.clojureScript)
+        }
+    }
+
+    private void configureCompilation(Project project) {
+        def File destDir = project.file("${project.buildDir.path}/javascript")
+
+        project.sourceSets.each { set ->
+            if (set.equals(project.sourceSets.test))
+                return
+            String compileTaskName = set.getCompileTaskName("clojureScript")
+            ClojureScriptCompileTask task = project.tasks.add(name: compileTaskName,
+                    type: ClojureScriptCompileTask.class) {
+                destinationDir = destDir
+                outputFile = project.file("${destDir}/all.js")
+                source set.clojureScript
+                clojureScriptRoots = set.clojureScript
+                classpath = project.files(
+                    set.compileClasspath,
+                    set.clojure.srcDirs,
+                    project.configurations.development
+                )
+                description =
+                    String.format("Compile the %s ClojureScript source.",
+                            set.name)
+            }
+            project.tasks[set.classesTaskName].dependsOn task
         }
     }
 }
