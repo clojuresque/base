@@ -58,13 +58,14 @@ public class ClojureScriptPlugin implements Plugin<Project> {
     }
 
     private void configureCompilation(Project project) {
-        def File destDir = project.file("${project.buildDir.path}/javascript")
-
         project.sourceSets.each { set ->
             if (set.equals(project.sourceSets.test))
                 return
-            String compileTaskName = set.getCompileTaskName("clojureScript")
-            ClojureScriptCompileTask task = project.tasks.add(name: compileTaskName,
+            def File destDir = project.file(
+                String.format("%s/javascript/%s", project.buildDir.path, set.name))
+
+            String taskName = set.getCompileTaskName("clojureScript")
+            ClojureScriptCompileTask task = project.tasks.add(name: taskName,
                     type: ClojureScriptCompileTask.class) {
                 destinationDir = destDir
                 outputFile = project.file("${destDir}/all.js")
