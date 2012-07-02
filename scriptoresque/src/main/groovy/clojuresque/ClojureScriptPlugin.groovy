@@ -34,6 +34,7 @@ public class ClojureScriptPlugin implements Plugin<Project> {
         configureConfigurations(project)
         configureSourceSets(project)
         configureCompilation(project)
+        configureGzip(project)
     }
 
     private void configureConfigurations(Project project) {
@@ -81,6 +82,28 @@ public class ClojureScriptPlugin implements Plugin<Project> {
                             set.name)
             }
             project.tasks[set.classesTaskName].dependsOn task
+        }
+    }
+
+    private void configureGzip(Project project) {
+        project.sourceSets.each { set ->
+            if (set.equals(project.sourceSets.test))
+                return
+            def File destDir = project.file(
+                String.format("%s/javascript/%s", project.buildDir.path, set.name))
+
+            String compileTaskName = set.getCompileTaskName("clojureScript")
+            ClojureScriptCompileTask compileTask = project.tasks[compileTaskName]
+
+            String taskName = set.getTaskName("gzip", "clojureScript")
+            ClojureScriptGzipTask gzipTask = project.tasks.add(name: taskName,
+                    type: ClojureScriptGzipTask.class) {
+                destinationDir = destDir
+                source compileTask
+                description =
+                    String.format("Gzip the %s ClojureScript compilate.",
+                            set.name)
+            }
         }
     }
 }
