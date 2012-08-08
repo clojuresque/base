@@ -40,8 +40,7 @@ project(':runtime') {
 
 subprojects {
     uploadArchives.doLast {
-        String pomFile = project.buildDir.path + "/" +
-            project.mavenPomDir.name + "/" +
+        String pomFile = project.mavenPomDir.name + "/" +
             project.name + "-" + project.version + ".xml"
 
         project.pom().writeTo(pomFile)
