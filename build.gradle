@@ -39,16 +39,23 @@ project(':runtime') {
 }
 
 subprojects {
-    uploadArchives.doLast {
-        String pomFile = project.mavenPomDir.name + "/" +
+    ext.pomFile = project.buildDir.path + "/" +
+            project.mavenPomDir.name + "/" +
             project.name + "-" + project.version + ".xml"
 
-        project.pom().writeTo(pomFile)
+    task writePom {
+        outputs.file project.pomFile
+    } << {
+        project.pom().writeTo(project.pomFile)
+    }
 
+    uploadArchives {
+        dependsOn project.writePom
+    } << {
         project.exec {
             commandLine(
                 '/usr/bin/scp',
-                pomFile,
+                project.pomFile,
                 project.jar.archivePath.path,
                 'clojars@clojars.org:'
             )
