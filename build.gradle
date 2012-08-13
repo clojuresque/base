@@ -4,7 +4,10 @@ subprojects {
 }
 
 project(':clojuresque') {
-    apply plugin: 'groovy'
+    apply {
+        plugin 'groovy'
+        plugin 'maven'
+    }
 
     dependencies {
         compile gradleApi()
@@ -21,19 +24,25 @@ project(':clojuresque') {
 }
 
 project(':clojuresque-runtime') {
-    apply plugin: 'java'
+    apply {
+        plugin 'java'
+        plugin 'maven'
+    }
 
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        compile 'org.clojure:clojure:[1.2,1.4)'
+        compile 'org.clojure:clojure:[1.2,1.5)'
     }
 }
 
 project(':scriptoresque') {
-    apply plugin: 'groovy'
+    apply {
+        plugin 'groovy'
+        plugin 'maven'
+    }
 
     repositories {
         mavenCentral()
@@ -50,7 +59,10 @@ project(':scriptoresque') {
 }
 
 project(':scriptoresque-runtime') {
-    apply plugin: 'java'
+    apply {
+        plugin 'java'
+        plugin 'maven'
+    }
 
     repositories {
         mavenCentral()
@@ -62,19 +74,24 @@ project(':scriptoresque-runtime') {
 }
 
 subprojects {
-    apply plugin: 'maven'
+    ext.pomFile = project.buildDir.path + "/" +
 
-    uploadArchives.doLast {
-        String pomFile = project.buildDir.path + "/" +
             project.mavenPomDir.name + "/" +
             project.name + "-" + project.version + ".xml"
 
-        project.pom().writeTo(pomFile)
+    task writePom {
+        outputs.file project.pomFile
+    } << {
+        project.pom().writeTo(project.pomFile)
+    }
 
+    uploadArchives {
+        dependsOn project.writePom
+    } << {
         project.exec {
             commandLine(
                 '/usr/bin/scp',
-                pomFile,
+                project.pomFile,
                 project.jar.archivePath.path,
                 'clojars@clojars.org:'
             )
