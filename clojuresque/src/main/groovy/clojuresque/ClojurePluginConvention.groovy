@@ -25,7 +25,6 @@ package clojuresque
 
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
-import org.gradle.util.ConfigureUtil
 
 import groovy.lang.Closure
 
@@ -39,8 +38,9 @@ class ClojurePluginConvention {
     }
 
     public ExecResult clojureexec(Closure spec) {
-        ClojureExecAction action = ConfigureUtil.configure(spec,
-            new ClojureExecAction(project.fileResolver, project.configurations.clojuresque))
+        ClojureExecAction action = project.configure(spec,
+            new ClojureExecAction(project.fileResolver,
+                project.configurations.clojuresque))
         return action.execute()
     }
 }
