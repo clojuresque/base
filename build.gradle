@@ -1,6 +1,12 @@
 subprojects {
     group = 'clojuresque'
     version = '1.5.3-SNAPSHOT'
+
+    apply plugin: 'signing'
+
+    signing {
+        sign configurations.archives
+    }
 }
 
 project(':clojuresque') {
@@ -57,6 +63,7 @@ subprojects {
                 '/usr/bin/scp',
                 project.pomFile,
                 project.jar.archivePath.path,
+                project.jar.archivePath.path + ".asc",
                 'clojars@clojars.org:'
             )
         }
