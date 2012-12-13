@@ -48,6 +48,9 @@ public class ClojurePlugin implements Plugin<Project> {
                     project.configurations.runtime.each {
                         from project.zipTree(it)
                         exclude 'META-INF/MANIFEST.MF'
+                        exclude 'META-INF/*.SF'
+                        exclude 'META-INF/*.DSA'
+                        exclude 'META-INF/*.RSA'
                     }
                     from jar.source
                 }
