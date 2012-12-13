@@ -48,7 +48,7 @@ public class ClojureTestTask extends ClojureSourceTask {
     @TaskAction
     public void runTests() {
         project.clojureexec {
-            this.jvmOptions()
+            project.configure delegate, this.jvmOptions
             classpath = project.files(
                 this.testRoots.srcDirs,
                 this.classesDir,
