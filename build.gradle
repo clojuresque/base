@@ -3,10 +3,6 @@ subprojects {
     version = '1.5.3-SNAPSHOT'
 
     apply plugin: 'signing'
-
-    signing {
-        sign configurations.archives
-    }
 }
 
 project(':clojuresque') {
@@ -55,6 +51,18 @@ subprojects {
         project.pom().writeTo(project.pomFile)
     }
 
+    artifacts {
+        writePom.outputs.files.each { archives it }
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
+    signArchives {
+        dependsOn writePom
+    }
+
     uploadArchives {
         dependsOn project.writePom
     } << {
@@ -62,6 +70,7 @@ subprojects {
             commandLine(
                 '/usr/bin/scp',
                 project.pomFile,
+                project.pomFile + ".asc",
                 project.jar.archivePath.path,
                 project.jar.archivePath.path + ".asc",
                 'clojars@clojars.org:'
