@@ -48,7 +48,24 @@ subprojects {
     task writePom {
         outputs.file project.pomFile
     } << {
-        project.pom().writeTo(project.pomFile)
+        project.pom {
+            project {
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'http://opensource.org/licenses/MIT'
+                        distribution 'repo'
+                    }
+                }
+                description "A Clojure plugin for the Gradle build system"
+                url "http://bitbucket.org/kotarak/clojuresque"
+                scm {
+                    connection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
+                    developerConnection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
+                    url 'hg@bitbucket.org:kotarak/clojuresque'
+                }
+            }
+        }.writeTo(project.pomFile)
     }
 
     artifacts {
