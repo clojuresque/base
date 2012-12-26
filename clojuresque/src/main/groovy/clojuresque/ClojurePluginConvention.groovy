@@ -38,9 +38,11 @@ class ClojurePluginConvention {
     }
 
     public ExecResult clojureexec(Closure spec) {
-        ClojureExecAction action = project.configure(spec,
+        ClojureExecAction action = project.configure(
             new ClojureExecAction(project.fileResolver,
-                project.configurations.clojuresque))
+                project.configurations.clojuresque),
+            spec
+        )
         return action.execute()
     }
 }
