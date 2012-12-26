@@ -2,13 +2,15 @@ subprojects {
     group = 'clojuresque'
     version = '1.5.4-SNAPSHOT'
 
-    apply plugin: 'signing'
+    apply {
+        plugin 'signing'
+        plugin 'maven'
+    }
 }
 
 project(':clojuresque') {
     apply {
         plugin 'groovy'
-        plugin 'maven'
     }
 
     dependencies {
@@ -28,7 +30,6 @@ project(':clojuresque') {
 project(':runtime') {
     apply {
         plugin 'java'
-        plugin 'maven'
     }
 
     repositories {
