@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2012 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -37,8 +37,8 @@ public class ClojurePlugin implements Plugin<Project> {
     }
 
     private void configureUberjar(Project project) {
-        project.tasks.withType(Jar.class).each { jar ->
-            project.tasks.add(name: "uber" + jar.name, type: Jar.class) {
+        project.tasks.withType(Jar.class).asMap.each { name, jar ->
+            project.tasks.add(name: "uber" + name, type: Jar.class) {
                 description =
                     'Constructs a jar with all runtime dependencies included'
                 dependsOn jar.source, project.configurations.runtime
