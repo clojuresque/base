@@ -2,9 +2,16 @@ subprojects {
     group = 'clojuresque'
     version = '1.5.4-SNAPSHOT'
 
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
     apply {
         plugin 'signing'
         plugin 'maven'
+    }
+
+    repositories {
+        maven { url "http://127.0.0.1:8080/repository/internal" }
+        mavenCentral()
     }
 }
 
@@ -32,68 +39,53 @@ project(':runtime') {
         plugin 'java'
     }
 
-    repositories {
-        mavenCentral()
-    }
-
     dependencies {
         compile 'org.clojure:clojure:[1.2,1.5)'
     }
 }
 
 subprojects {
-    ext.pomFile = project.buildDir.path + "/" +
-            project.mavenPomDir.name + "/" +
-            project.name + "-" + project.version + ".xml"
-
-    task writePom {
-        outputs.file project.pomFile
-    } << {
-        project.pom {
-            project {
-                licenses {
-                    license {
-                        name 'MIT License'
-                        url 'http://opensource.org/licenses/MIT'
-                        distribution 'repo'
-                    }
-                }
-                description "A Clojure plugin for the Gradle build system"
-                url "http://bitbucket.org/kotarak/clojuresque"
-                scm {
-                    connection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
-                    developerConnection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
-                    url 'hg@bitbucket.org:kotarak/clojuresque'
-                }
-            }
-        }.writeTo(project.pomFile)
+    configurations {
+        deployerJars
     }
 
-    artifacts {
-        writePom.outputs.files.each { archives it }
+    dependencies {
+        deployerJars 'org.apache.maven.wagon:wagon-http-lightweight:2.2'
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                configuration = configurations.deployerJars
+                repository(url: "https://clojars.org/repo") {
+                    authentication(
+                        userName: project.properties["clojuresque.clojars.username"],
+                        password: project.properties["clojuresque.clojars.password"]
+                    )
+                }
+                pom.project {
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'http://opensource.org/licenses/MIT'
+                            distribution 'repo'
+                        }
+                    }
+                    description "A Clojure plugin for the Gradle build system"
+                    url "http://bitbucket.org/clojuresque/clojuresque"
+                    scm {
+                        connection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
+                        developerConnection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
+                        url 'hg@bitbucket.org:kotarak/clojuresque'
+                    }
+                }
+                beforeDeployment { signing.signPom(it) }
+            }
+        }
     }
 
     signing {
         sign configurations.archives
-    }
-
-    signArchives {
-        dependsOn writePom
-    }
-
-    uploadArchives {
-        dependsOn project.writePom
-    } << {
-        project.exec {
-            commandLine(
-                '/usr/bin/scp',
-                project.pomFile,
-                project.pomFile + ".asc",
-                project.jar.archivePath.path,
-                project.jar.archivePath.path + ".asc",
-                'clojars@clojars.org:'
-            )
-        }
     }
 }
 
