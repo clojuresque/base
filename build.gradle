@@ -74,9 +74,9 @@ subprojects {
                     description "A Clojure plugin for the Gradle build system"
                     url "http://bitbucket.org/clojuresque/clojuresque"
                     scm {
-                        connection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
-                        developerConnection 'scm:hg:hg@bitbucket.org:kotarak/clojuresque'
-                        url 'hg@bitbucket.org:kotarak/clojuresque'
+                        connection 'scm:hg:hg@bitbucket.org:clojuresque/clojuresque'
+                        developerConnection 'scm:hg:hg@bitbucket.org:clojuresque/clojuresque'
+                        url 'hg@bitbucket.org:clojuresque/clojuresque'
                     }
                 }
                 beforeDeployment { signing.signPom(it) }
