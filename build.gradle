@@ -44,31 +44,6 @@ project(':clojuresque-runtime') {
     }
 }
 
-project(':scriptoresque') {
-    apply {
-        plugin 'groovy'
-    }
-
-    dependencies {
-        compile gradleApi()
-        // Workaround for milestone4
-        compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: '**/*.jar')
-        compile project(':clojuresque')
-
-        groovy localGroovy()
-    }
-}
-
-project(':scriptoresque-runtime') {
-    apply {
-        plugin 'java'
-    }
-
-    dependencies {
-        compile project(':clojuresque-runtime')
-    }
-}
-
 subprojects {
     configurations {
         deployerJars
