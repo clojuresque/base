@@ -1,10 +1,24 @@
 subprojects {
     group = 'clojuresque'
     version = '1.6.0-SNAPSHOT'
+
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+    apply {
+        plugin 'signing'
+        plugin 'maven'
+    }
+
+    repositories {
+        maven { url "http://127.0.0.1:8080/repository/internal" }
+        mavenCentral()
+    }
 }
 
 project(':clojuresque') {
-    apply plugin: 'groovy'
+    apply {
+        plugin 'groovy'
+    }
 
     dependencies {
         compile gradleApi()
@@ -21,22 +35,18 @@ project(':clojuresque') {
 }
 
 project(':clojuresque-runtime') {
-    apply plugin: 'java'
-
-    repositories {
-        mavenCentral()
+    apply {
+        plugin 'java'
     }
 
     dependencies {
-        compile 'org.clojure:clojure:[1.2,1.4)'
+        compile 'org.clojure:clojure:[1.2,1.5)'
     }
 }
 
 project(':scriptoresque') {
-    apply plugin: 'groovy'
-
-    repositories {
-        mavenCentral()
+    apply {
+        plugin 'groovy'
     }
 
     dependencies {
@@ -50,10 +60,8 @@ project(':scriptoresque') {
 }
 
 project(':scriptoresque-runtime') {
-    apply plugin: 'java'
-
-    repositories {
-        mavenCentral()
+    apply {
+        plugin 'java'
     }
 
     dependencies {
@@ -62,23 +70,47 @@ project(':scriptoresque-runtime') {
 }
 
 subprojects {
-    apply plugin: 'maven'
+    configurations {
+        deployerJars
+    }
 
-    uploadArchives.doLast {
-        String pomFile = project.buildDir.path + "/" +
-            project.mavenPomDir.name + "/" +
-            project.name + "-" + project.version + ".xml"
+    dependencies {
+        deployerJars 'org.apache.maven.wagon:wagon-http-lightweight:2.2'
+    }
 
-        project.pom().writeTo(pomFile)
-
-        project.exec {
-            commandLine(
-                '/usr/bin/scp',
-                pomFile,
-                project.jar.archivePath.path,
-                'clojars@clojars.org:'
-            )
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                configuration = configurations.deployerJars
+                repository(url: "https://clojars.org/repo") {
+                    authentication(
+                        userName: project.properties["clojuresque.clojars.username"],
+                        password: project.properties["clojuresque.clojars.password"]
+                    )
+                }
+                pom.project {
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'http://opensource.org/licenses/MIT'
+                            distribution 'repo'
+                        }
+                    }
+                    description "A Clojure plugin for the Gradle build system"
+                    url "http://bitbucket.org/clojuresque/clojuresque"
+                    scm {
+                        connection 'scm:hg:hg@bitbucket.org:clojuresque/clojuresque'
+                        developerConnection 'scm:hg:hg@bitbucket.org:clojuresque/clojuresque'
+                        url 'hg@bitbucket.org:clojuresque/clojuresque'
+                    }
+                }
+                beforeDeployment { signing.signPom(it) }
+            }
         }
+    }
+
+    signing {
+        sign configurations.archives
     }
 }
 

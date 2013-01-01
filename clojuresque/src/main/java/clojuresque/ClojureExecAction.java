@@ -29,7 +29,6 @@ import org.gradle.process.ExecResult;
 import org.gradle.process.internal.ExecHandle;
 import org.gradle.process.internal.JavaExecAction;
 import org.gradle.process.internal.JavaExecHandleBuilder;
-import org.gradle.util.GUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class ClojureExecAction extends JavaExecHandleBuilder implements JavaExec
     @Override
     public List<String> getAllJvmArgs() {
         List<String> allArgs = super.getAllJvmArgs();
-        String driver = GUtil.join(driverClasspath.getFiles(), File.pathSeparator);
+        String driver = driverClasspath.getAsPath();
 
         int pos = allArgs.indexOf("-cp") + 1;
         if (pos > 0) {

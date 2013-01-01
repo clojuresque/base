@@ -70,7 +70,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
 
 
         project.clojureexec {
-            this.jvmOptions()
+            project.configure delegate, this.jvmOptions
             systemProperties "clojure.compile.path": this.destinationDir.path
             classpath = project.files(
                 this.clojureRoots.srcDirs,
