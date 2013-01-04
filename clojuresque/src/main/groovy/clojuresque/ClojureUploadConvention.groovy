@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -23,10 +23,14 @@
 
 package clojuresque
 
-import org.gradle.api.Project
 import org.gradle.api.tasks.Upload
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 class ClojureUploadConvention {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClojureUploadConvention)
+
     private Upload upload
 
     public ClojureUploadConvention(Upload upload) {
@@ -34,6 +38,9 @@ class ClojureUploadConvention {
     }
 
     public void clojarsDeploy() {
+        Util.deprecationWarning(LOGGER, "clojarsDeploy()", "clojars.deploy()")
+        LOGGER.warn("(provided by new clojars plugin)")
+
         upload.doLast {
             String pomName = project.buildDir.path + "/" +
                 project.mavenPomDir.path + "/" +
