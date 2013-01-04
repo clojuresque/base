@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -38,6 +38,8 @@ public class ClojureBasePlugin implements Plugin<Project> {
 
         project.convention.plugins.clojure =
             new ClojurePluginConvention(project)
+
+        project.extensions.create("clojure", ClojurePluginExtension)
 
         RepositoryHandler repos = project.repositories
         repos.convention.plugins.clojure =

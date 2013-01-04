@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -59,12 +59,12 @@ public class ClojureCompileTask extends ClojureSourceTask {
         destinationDir.mkdirs()
 
         List<String> options = []
-        if (project.aotCompile) {
+        if (project.clojure.aotCompile) {
             options.add("--compile")
         } else {
             options.add("--require")
         }
-        if (project.warnOnReflection) {
+        if (project.clojure.warnOnReflection) {
             options.add("--warn-on-reflection")
         }
 
@@ -81,7 +81,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
             args = options + this.source.files
         }
 
-        if (!project.aotCompile) {
+        if (!project.clojure.aotCompile) {
             project.copy {
                 from this.source
                 into this.destinationDir

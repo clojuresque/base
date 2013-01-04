@@ -1,5 +1,5 @@
 /*-
- * Copyright 2012,2013 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -23,31 +23,7 @@
 
 package clojuresque
 
-import org.slf4j.Logger
-
-import java.io.InputStreamReader
-import java.util.Properties
-
-public class Util {
-    static Properties props = null;
-
-    public static Properties getProperties() {
-        if (props == null) {
-            props = new Properties()
-
-            InputStreamReader propStream = new InputStreamReader(Util.class.getResourceAsStream("clojuresque.properties"), "UTF-8")
-
-            try {
-                props.load(propStream)
-            } finally {
-                propStream.close()
-            }
-        }
-
-        return props
-    }
-
-    public static deprecationWarning(Logger l, String o, String n) {
-        l.warn(String.format("'%s' is deprecated and will go away in a future version. Please use '%s' instead.", o, n))
-    }
+class ClojurePluginExtension {
+    def boolean warnOnReflection = false
+    def boolean aotCompile       = false
 }

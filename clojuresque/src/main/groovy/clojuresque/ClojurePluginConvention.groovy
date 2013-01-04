@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -26,12 +26,14 @@ package clojuresque
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import groovy.lang.Closure
 
 class ClojurePluginConvention {
-    def boolean warnOnReflection = false
-    def boolean aotCompile = false
-    final Project project
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClojurePluginConvention)
+    private final Project project
 
     public ClojurePluginConvention(Project project) {
         this.project = project
@@ -44,5 +46,25 @@ class ClojurePluginConvention {
             spec
         )
         return action.execute()
+    }
+
+    public void setAotCompile(boolean f) {
+        Util.deprecationWarning(LOGGER, "aotCompile", "clojure.aotCompile")
+        project.clojure.aotCompile = f
+    }
+
+    public boolean getAotCompile() {
+        Util.deprecationWarning(LOGGER, "aotCompile", "clojure.aotCompile")
+        return project.clojure.aotCompile
+    }
+
+    public void setWarnOnReflection(boolean f) {
+        Util.deprecationWarning(LOGGER, "warnOnReflection", "clojure.warnOnReflection")
+        project.clojure.warnOnReflection = f
+    }
+
+    public boolean getWarnOnReflection() {
+        Util.deprecationWarning(LOGGER, "warnOnReflection", "clojure.warnOnReflection")
+        return project.clojure.warnOnReflection
     }
 }
