@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,10 +35,14 @@ public class Driver {
         final String namespace = command.substring(0, slash);
         final String function  = command.substring(slash + 1);
 
-        RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
-        RT.var("clojure.core", "apply").invoke(
-                RT.var(namespace, function).deref(),
-                RT.next(RT.seq(args))
-        );
+        try {
+            RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
+            RT.var("clojure.core", "apply").invoke(
+                    RT.var(namespace, function).deref(),
+                    RT.next(RT.seq(args))
+            );
+        } finally {
+            RT.var("clojure.core", "shutdown-agents").invoke();
+        }
     }
 }
