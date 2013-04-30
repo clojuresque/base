@@ -39,8 +39,19 @@ project(':runtime') {
         plugin 'java'
     }
 
+    configurations {
+        clojure
+    }
+
     dependencies {
-        compile 'org.clojure:clojure:[1.2,1.5)'
+        clojure 'org.clojure:clojure:[1.2,1.6)'
+    }
+
+    sourceSets.main {
+        compileClasspath = project.files(
+            compileClasspath,
+            project.configurations.clojure
+        )
     }
 }
 
