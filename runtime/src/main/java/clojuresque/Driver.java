@@ -38,7 +38,7 @@ public class Driver {
 
         try {
             RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
-            boolean result = (boolean)RT.var("clojure.core", "apply").invoke(
+            Boolean result = (Boolean)RT.var("clojure.core", "apply").invoke(
                     RT.var(namespace, function).deref(),
                     RT.next(RT.seq(args))
             );
