@@ -24,9 +24,16 @@
 package clojuresque;
 
 import clojure.lang.RT;
-import clojure.lang.Symbol;
+import clojure.lang.Var;
 
 public class Driver {
+    static final Var require = RT.var("clojure.core", "require");
+    static final Var apply   = RT.var("clojure.core", "apply");
+    static final Var symbol  = RT.var("clojure.core", "symbol");
+    static final Var seq     = RT.var("clojure.core", "seq");
+    static final Var next    = RT.var("clojure.core", "next");
+    static final Var sa      = RT.var("clojure.core", "shutdown-agents");
+
     public static void main(String[] args) throws Exception {
         int exitCode = 1;
         final String command = args[0];
@@ -37,15 +44,15 @@ public class Driver {
         final String function  = command.substring(slash + 1);
 
         try {
-            RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
-            Boolean result = (Boolean)RT.var("clojure.core", "apply").invoke(
+            require.invoke(symbol.invoke(namespace));
+            Boolean result = (Boolean)apply.invoke(
                     RT.var(namespace, function).deref(),
-                    RT.next(RT.seq(args))
+                    next.invoke(seq.invoke(args))
             );
             if (result)
                 exitCode = 0;
         } finally {
-            RT.var("clojure.core", "shutdown-agents").invoke();
+            sa.invoke();
         }
 
         System.exit(exitCode);
