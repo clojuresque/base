@@ -28,6 +28,7 @@ import clojure.lang.Symbol;
 
 public class Driver {
     public static void main(String[] args) throws Exception {
+        int exitCode = 1;
         final String command = args[0];
 
         int slash = command.indexOf("/");
@@ -41,8 +42,11 @@ public class Driver {
                     RT.var(namespace, function).deref(),
                     RT.next(RT.seq(args))
             );
+            exitCode = 0;
         } finally {
             RT.var("clojure.core", "shutdown-agents").invoke();
         }
+
+        System.exit(exitCode);
     }
 }
