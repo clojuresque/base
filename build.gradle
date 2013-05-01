@@ -28,6 +28,7 @@ project(':clojuresque') {
     }
 
     processResources {
+        inputs.property "version", {-> project.version}
         from(sourceSets.main.resources.srcDirs) {
             expand("version": project.version)
         }
