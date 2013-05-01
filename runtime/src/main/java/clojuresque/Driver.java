@@ -38,11 +38,12 @@ public class Driver {
 
         try {
             RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
-            RT.var("clojure.core", "apply").invoke(
+            boolean result = (boolean)RT.var("clojure.core", "apply").invoke(
                     RT.var(namespace, function).deref(),
                     RT.next(RT.seq(args))
             );
-            exitCode = 0;
+            if (result)
+                exitCode = 0;
         } finally {
             RT.var("clojure.core", "shutdown-agents").invoke();
         }

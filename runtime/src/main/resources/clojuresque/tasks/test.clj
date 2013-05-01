@@ -6,8 +6,7 @@
 
 (defn check-result
   [result]
-  (when (or (pos? (:fail result)) (pos? (:error result)))
-    (System/exit 1)))
+  (and (zero? (:fail result)) (zero? (:error result))))
 
 (deftask test-namespaces
   "Run all tests in the namespaces of the given files by virtue of clojure.test."

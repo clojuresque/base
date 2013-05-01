@@ -78,21 +78,21 @@
         ; test each namespace individually to allow per ns reporting of failures at the end
         (doseq [namespace namespaces]
           (test-namespace-with-junit-output namespace output-dir))
-        (shutdown-agents)
-        (when (:test @results)
-          (println "\nTotals:")
-          (report @results)
-          (println)
-          (if (successful? @results)
-            (do 
-              (println "Success!!!")
-              (System/exit 0))
-            (do
-              (println "\n!!! There were test failures:")
-              ; Print results for each namespace which was unsuccessful
-              (doseq [[ns summary] @failed]
-                (println ns ": " (:fail summary) "failures," (:error summary) "errors."))
-              (println)
-              (System/exit 1))))
-        (System/exit 0)))))
+        (if (:test @results)
+          (do
+            (println "\nTotals:")
+            (report @results)
+            (println)
+            (if (successful? @results)
+              (do
+                (println "Success!!!")
+                true)
+              (do
+                (println "\n!!! There were test failures:")
+                ; Print results for each namespace which was unsuccessful
+                (doseq [[ns summary] @failed]
+                  (println ns ": " (:fail summary) "failures," (:error summary) "errors."))
+                (println)
+                false)))
+          true)))))
 

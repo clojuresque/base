@@ -15,4 +15,5 @@
                  :description description
                  :output-dir  destination
                  :sources     sources}]
-    (generate-docs project)))
+    (generate-docs project)
+    true))
