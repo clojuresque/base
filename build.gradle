@@ -1,6 +1,6 @@
 subprojects {
     group = 'clojuresque'
-    version = '1.5.8-SNAPSHOT'
+    version = '1.5.8'
 
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
