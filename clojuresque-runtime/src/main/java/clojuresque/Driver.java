@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,10 +24,18 @@
 package clojuresque;
 
 import clojure.lang.RT;
-import clojure.lang.Symbol;
+import clojure.lang.Var;
 
 public class Driver {
+    static final Var require = RT.var("clojure.core", "require");
+    static final Var apply   = RT.var("clojure.core", "apply");
+    static final Var symbol  = RT.var("clojure.core", "symbol");
+    static final Var seq     = RT.var("clojure.core", "seq");
+    static final Var next    = RT.var("clojure.core", "next");
+    static final Var sa      = RT.var("clojure.core", "shutdown-agents");
+
     public static void main(String[] args) throws Exception {
+        int exitCode = 1;
         final String command = args[0];
 
         int slash = command.indexOf("/");
@@ -35,10 +43,18 @@ public class Driver {
         final String namespace = command.substring(0, slash);
         final String function  = command.substring(slash + 1);
 
-        RT.var("clojure.core", "require").invoke(Symbol.create(namespace));
-        RT.var("clojure.core", "apply").invoke(
-                RT.var(namespace, function).deref(),
-                RT.next(RT.seq(args))
-        );
+        try {
+            require.invoke(symbol.invoke(namespace));
+            Boolean result = (Boolean)apply.invoke(
+                    RT.var(namespace, function).deref(),
+                    next.invoke(seq.invoke(args))
+            );
+            if (result)
+                exitCode = 0;
+        } finally {
+            sa.invoke();
+        }
+
+        System.exit(exitCode);
     }
 }

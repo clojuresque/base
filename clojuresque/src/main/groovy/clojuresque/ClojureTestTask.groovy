@@ -38,6 +38,8 @@ public class ClojureTestTask extends ClojureSourceTask {
     def FileCollection classpath
     def SourceDirectorySet testRoots
     def Closure jvmOptions = {}
+    def boolean junit = false
+    def String junitOutputDir = "build/test-results" 
     def List<String> tests = []
 
     @InputFiles
@@ -54,12 +56,17 @@ public class ClojureTestTask extends ClojureSourceTask {
                 this.classesDir,
                 this.classpath
             )
-            if (tests.size() == 0) {
-                main = "clojuresque.tasks.test/test-namespaces"
-                args = this.source.files
+            if (junit) {
+                main = "clojuresque.tasks.test-junit/test-namespaces"
+                args = ["-o", junitOutputDir] + this.source.files
             } else {
-                main = "clojuresque.tasks.test/test-vars"
-                args = tests
+                if (tests.size() == 0) {
+                    main = "clojuresque.tasks.test/test-namespaces"
+                    args = this.source.files
+                } else {
+                    main = "clojuresque.tasks.test/test-vars"
+                    args = tests
+                }
             }
         }
     }

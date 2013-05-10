@@ -1,5 +1,5 @@
 /*-
- * Copyright 2011 © Meikel Brandmeyer.
+ * Copyright 2011-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -58,7 +58,7 @@ public class ClojureDocTask extends ClojureSourceTask {
         }
 
         project.clojureexec {
-            this.jvmOptions()
+            project.configure delegate, jvmOptions
             classpath = project.files(
                 this.clojureRoots.srcDirs,
                 this.classpath

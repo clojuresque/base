@@ -20,4 +20,5 @@
     (binding [*warn-on-reflection* warn-on-reflection
               *compile-path*       (System/getProperty "clojure.compile.path")]
       (doseq [nspace namespaces]
-        (mode nspace)))))
+        (mode nspace))))
+  true)
