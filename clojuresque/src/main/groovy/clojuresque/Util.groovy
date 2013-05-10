@@ -25,29 +25,24 @@ package clojuresque
 
 import org.slf4j.Logger
 
-import java.io.InputStreamReader
 import java.util.Properties
 
-public class Util {
+class Util {
     static Properties props = null;
 
-    public static Properties getProperties() {
+    static Properties getProperties() {
         if (props == null) {
             props = new Properties()
 
-            InputStreamReader propStream = new InputStreamReader(Util.class.getResourceAsStream("clojuresque.properties"), "UTF-8")
-
-            try {
-                props.load(propStream)
-            } finally {
-                propStream.close()
-            }
+            Util.class.
+                getResourceAsStream("clojuresque.properties").
+                withReader("UTF-8") { props.load it }
         }
 
         return props
     }
 
-    public static deprecationWarning(Logger l, String o, String n) {
+    static deprecationWarning(Logger l, String o, String n) {
         l.warn(String.format("'%s' is deprecated and will go away in a future version. Please use '%s' instead.", o, n))
     }
 }
