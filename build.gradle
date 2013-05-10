@@ -59,6 +59,10 @@ project(':clojuresque') {
         // Workaround for milestone4
         compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: '**/*.jar')
         compile localGroovy()
+
+        testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
+            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        }
     }
 
     processResources {
