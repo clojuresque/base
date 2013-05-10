@@ -25,23 +25,20 @@ package clojuresque
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.tasks.Upload
 
 public class ClojureBasePlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.apply plugin: JavaPlugin.class
-        project.apply plugin: MavenPlugin.class
+    void apply(Project project) {
+        project.apply plugin: "java"
+        project.apply plugin: "maven"
 
         project.convention.plugins.clojure =
             new ClojurePluginConvention(project)
 
         project.extensions.create("clojure", ClojurePluginExtension)
 
-        RepositoryHandler repos = project.repositories
+        def repos = project.repositories
         repos.convention.plugins.clojure =
             new ClojureRepositoryConvention(repos)
 
@@ -53,7 +50,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
         configureClojarsUpload(project)
     }
 
-    private void configureConfigurations(Project project) {
+    private void configureConfigurations(project) {
         project.configurations {
             clojuresque {
                 transitive = false
@@ -72,26 +69,28 @@ public class ClojureBasePlugin implements Plugin<Project> {
         }
     }
 
-    private void configureSourceSets(Project project) {
+    private void configureSourceSets(project) {
         ProjectInternal projectInternal = (ProjectInternal)project
 
         project.sourceSets.each { sourceSet ->
-            ClojureSourceSet clojureSourceSet =
+             def clojureSourceSet =
                 new ClojureSourceSet(sourceSet.name, projectInternal.fileResolver)
 
             sourceSet.convention.plugins.clojure = clojureSourceSet
-            sourceSet.clojure.srcDirs = [ String.format("src/%s/clojure", sourceSet.name) ]
+            sourceSet.clojure.srcDirs = [
+                String.format("src/%s/clojure", sourceSet.name)
+            ]
             sourceSet.allSource.source(clojureSourceSet.clojure)
         }
     }
 
-    private void configureCompilation(Project project) {
+    private void configureCompilation(project) {
         project.sourceSets.each { set ->
             if (set.equals(project.sourceSets.test))
                 return
-            String compileTaskName = set.getCompileTaskName("clojure")
-            ClojureCompileTask task = project.tasks.add(name: compileTaskName,
-                    type: ClojureCompileTask.class) {
+            def compileTaskName = set.getCompileTaskName("clojure")
+            def task = project.tasks.add(compileTaskName,
+                    type: ClojureCompileTask) {
                 destinationDir = set.output.classesDir
                 source set.clojure
                 clojureRoots = set.clojure
@@ -107,15 +106,14 @@ public class ClojureBasePlugin implements Plugin<Project> {
         }
     }
 
-    private void configureDocs(Project project) {
+    private void configureDocs(project) {
         project.sourceSets.each { set ->
             if (set.equals(project.sourceSets.test))
                 return
-            String compileTaskName = set.getCompileTaskName("clojure")
-            String docTaskName = set.getTaskName(null, "clojuredoc")
-            ClojureCompileTask compileTask = project.tasks[compileTaskName]
-            ClojureDocTask task = project.tasks.add(name: docTaskName,
-                    type: ClojureDocTask.class) {
+            def compileTaskName = set.getCompileTaskName("clojure")
+            def docTaskName = set.getTaskName(null, "clojuredoc")
+            def compileTask = project.tasks[compileTaskName]
+            def task = project.tasks.add(docTaskName, type: ClojureDocTask) {
                 destinationDir = project.file(
                     project.docsDir.path + "/clojuredoc"
                 )
@@ -129,9 +127,9 @@ public class ClojureBasePlugin implements Plugin<Project> {
         }
     }
 
-    private void configureTests(Project project) {
-        ClojureTestTask clojureTest = project.tasks.add(name: "clojureTest",
-                type: ClojureTestTask.class) {
+    private void configureTests(project) {
+        def clojureTest = project.tasks.add("clojureTest",
+                type: ClojureTestTask) {
             source project.sourceSets.test.clojure
             testRoots = project.sourceSets.test.clojure
             classpath = project.configurations.testRuntime
@@ -145,7 +143,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
         project.tasks.test.dependsOn clojureTest
     }
 
-    private void configureClojarsUpload(Project project) {
+    private void configureClojarsUpload(project) {
         project.tasks.whenTaskAdded { upload ->
             if (!(upload instanceof Upload))
                 return
