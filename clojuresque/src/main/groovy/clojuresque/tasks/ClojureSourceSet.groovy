@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package clojuresque
+package clojuresque.tasks
 
 import groovy.lang.Closure
 

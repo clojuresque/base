@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package clojuresque
+package clojuresque.tasks
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet

@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009,2010 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,19 +21,38 @@
  * IN THE SOFTWARE.
  */
 
-package clojuresque
+package clojuresque.tasks
 
-import org.gradle.api.tasks.SourceTask
+import org.gradle.api.tasks.Upload
 
-public class ClojureSourceTask extends SourceTask {
-    /* Duplicate the functionality of ClojureSourceSet. */
-    public ClojureSourceTask includeNamespace(String pattern) {
-        include(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
-        return this
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+class ClojureUploadConvention {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClojureUploadConvention)
+
+    private Upload upload
+
+    public ClojureUploadConvention(Upload upload) {
+        this.upload = upload
     }
 
-    public ClojureSourceTask excludeNamespace(String pattern) {
-        exclude(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")
-        return this
+    public void clojarsDeploy() {
+        Util.deprecationWarning(LOGGER, "clojarsDeploy()", "clojars.deploy()")
+        LOGGER.warn("(provided by new clojars plugin)")
+
+        upload.doLast {
+            String pomName = project.buildDir.path + "/" +
+                project.mavenPomDir.path + "/" +
+                "pom-" + upload.configuration.name + ".xml"
+
+            project.pom().writeTo(pomName)
+            project.exec {
+                executable = '/usr/bin/scp'
+                args = project.files(upload.artifacts)*.path +
+                    [ project.file(pomName).path,
+                      'clojars@clojars.org:' ]
+            }
+        }
     }
 }

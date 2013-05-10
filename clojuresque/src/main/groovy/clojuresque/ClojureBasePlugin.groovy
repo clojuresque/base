@@ -28,6 +28,12 @@ import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.tasks.Upload
 
+import clojuresque.tasks.ClojureCompileTask
+import clojuresque.tasks.ClojureDocTask
+import clojuresque.tasks.ClojureSourceSet
+import clojuresque.tasks.ClojureTestTask
+import clojuresque.tasks.ClojureUploadConvention
+
 public class ClojureBasePlugin implements Plugin<Project> {
     void apply(Project project) {
         project.apply plugin: "java"

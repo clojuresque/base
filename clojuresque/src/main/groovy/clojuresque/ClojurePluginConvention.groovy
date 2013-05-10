@@ -23,6 +23,8 @@
 
 package clojuresque
 
+import clojuresque.tasks.ClojureExecAction
+
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
 
