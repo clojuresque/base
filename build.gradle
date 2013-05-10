@@ -58,7 +58,7 @@ project(':clojuresque') {
         compile gradleApi()
         // Workaround for milestone4
         compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: '**/*.jar')
-        groovy localGroovy()
+        compile localGroovy()
     }
 
     processResources {
@@ -75,7 +75,7 @@ project(':clojuresque-runtime') {
     }
 
     dependencies {
-        clojure 'org.clojure:clojure:[1.2,1.6)'
+        clojure 'org.clojure:clojure:1.5.1'
     }
 
     sourceSets.main {
@@ -87,5 +87,5 @@ project(':clojuresque-runtime') {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "1.0"
+    gradleVersion = "1.6"
 }
