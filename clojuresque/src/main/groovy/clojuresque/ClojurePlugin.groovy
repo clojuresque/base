@@ -37,8 +37,8 @@ public class ClojurePlugin implements Plugin<Project> {
     }
 
     private void configureUberjar(Project project) {
-        project.tasks.withType(Jar.class).asMap.each { name, jar ->
-            project.tasks.add(name: "uber" + name, type: Jar.class) {
+        project.tasks.withType(Jar).asMap.each { name, jar ->
+            project.task("uber" + name, type: Jar) {
                 description =
                     'Constructs a jar with all runtime dependencies included'
                 dependsOn jar.source, project.configurations.runtime
@@ -59,7 +59,7 @@ public class ClojurePlugin implements Plugin<Project> {
     }
 
     private void configureDepsTask(Project project) {
-        Copy deps = project.tasks.add("deps", Copy.class)
+        Copy deps = project.task("deps", type: Copy)
 
         deps.configure {
             description =
