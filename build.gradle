@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-allprojects {
+subprojects {
     group = 'clojuresque'
     version = '1.6.0-SNAPSHOT'
 
