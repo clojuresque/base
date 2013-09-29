@@ -23,6 +23,7 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
@@ -55,7 +56,7 @@ public class ClojureTestTask extends ClojureSourceTask {
     @TaskAction
     public void runTests() {
         project.clojureexec {
-            project.configure delegate, this.jvmOptions
+            ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
                 this.testRoots.srcDirs,
                 this.classesDir,

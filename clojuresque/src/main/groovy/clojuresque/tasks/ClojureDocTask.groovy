@@ -23,6 +23,7 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
@@ -58,7 +59,7 @@ public class ClojureDocTask extends ClojureSourceTask {
         destDir.mkdirs()
 
         project.clojureexec {
-            project.configure delegate, this.jvmOptions
+            ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
                 this.clojureRoots.srcDirs,
                 this.classpath

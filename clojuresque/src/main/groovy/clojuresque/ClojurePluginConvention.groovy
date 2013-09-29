@@ -24,6 +24,7 @@
 package clojuresque
 
 import clojuresque.tasks.ClojureExecAction
+import kotka.gradle.utils.ConfigureUtil
 
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
@@ -42,7 +43,7 @@ class ClojurePluginConvention {
     }
 
     public ExecResult clojureexec(Closure spec) {
-        ClojureExecAction action = project.configure(
+        ClojureExecAction action = ConfigureUtil.configure(
             new ClojureExecAction(project.fileResolver,
                 project.configurations.clojuresque),
             spec

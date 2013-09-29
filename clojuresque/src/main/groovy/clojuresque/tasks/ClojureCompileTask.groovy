@@ -23,6 +23,7 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
@@ -71,7 +72,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
         }
 
         project.clojureexec {
-            project.configure delegate, this.jvmOptions
+            ConfigureUtil.configure delegate, this.jvmOptions
             systemProperties "clojure.compile.path": destDir.path
             classpath = project.files(
                 this.clojureRoots.srcDirs,
