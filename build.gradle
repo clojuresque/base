@@ -46,6 +46,16 @@ project(':clojuresque') {
         }
     }
 
+    compileJava {
+        sourceCompatibility = "1.6"
+        targetCompatibility = "1.6"
+    }
+
+    compileGroovy {
+        sourceCompatibility = "1.6"
+        targetCompatibility = "1.6"
+    }
+
     processResources {
         inputs.property "version", {-> project.version}
         from(sourceSets.main.resources.srcDirs) {
@@ -71,6 +81,12 @@ project(':clojuresque-runtime') {
             project.configurations.clojure
         )
     }
+
+    compileJava {
+        sourceCompatibility = "1.6"
+        targetCompatibility = "1.6"
+    }
+
 }
 
 task wrapper(type: Wrapper) {
