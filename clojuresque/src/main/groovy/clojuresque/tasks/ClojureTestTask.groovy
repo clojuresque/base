@@ -45,7 +45,9 @@ public class ClojureTestTask extends ClojureSourceTask {
     def classpath
 
     def testRoots
-    def jvmOptions = {}
+
+    @Delayed
+    def jvmOptions
     def junit = false
 
     @Delayed

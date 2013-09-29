@@ -51,6 +51,8 @@ public class ClojureCompileTask extends ClojureSourceTask {
     def fileMode = null
 
     def clojureRoots
+
+    @Delayed
     def jvmOptions = {}
 
     @TaskAction

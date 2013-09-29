@@ -48,7 +48,9 @@ public class ClojureDocTask extends ClojureSourceTask {
     def classpath
 
     def clojureRoots
-    def jvmOptions = {}
+
+    @Delayed
+    def jvmOptions
 
     @TaskAction
     public void clojuredoc() {
