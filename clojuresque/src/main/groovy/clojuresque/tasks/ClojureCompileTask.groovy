@@ -46,6 +46,9 @@ public class ClojureCompileTask extends ClojureSourceTask {
     @Delayed
     def classpath
 
+    def dirMode  = null
+    def fileMode = null
+
     def clojureRoots
     def jvmOptions = {}
 
@@ -81,6 +84,9 @@ public class ClojureCompileTask extends ClojureSourceTask {
 
         if (!project.clojure.aotCompile) {
             project.copy {
+                dirMode  = this.dirMode
+                fileMode = this.fileMode
+
                 from source
                 into destDir
             }
