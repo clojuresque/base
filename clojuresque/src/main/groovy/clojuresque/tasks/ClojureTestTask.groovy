@@ -23,6 +23,8 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.Delayed
+
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.InputFiles
@@ -34,18 +36,21 @@ import java.io.InputStream
 import groovy.lang.Closure
 
 public class ClojureTestTask extends ClojureSourceTask {
-    def File classesDir
-    def FileCollection classpath
-    def SourceDirectorySet testRoots
-    def Closure jvmOptions = {}
-    def boolean junit = false
-    def String junitOutputDir = "build/test-results" 
-    def List<String> tests = []
+    @Delayed
+    def classesDir
 
     @InputFiles
-    public FileCollection getTestClasspath() {
-        return this.classpath
-    }
+    @Delayed
+    def classpath
+
+    def testRoots
+    def jvmOptions = {}
+    def junit = false
+
+    @Delayed
+    def junitOutputDir
+
+    def List<String> tests = []
 
     @TaskAction
     public void runTests() {
@@ -58,14 +63,14 @@ public class ClojureTestTask extends ClojureSourceTask {
             )
             if (junit) {
                 main = "clojuresque.tasks.test-junit/test-namespaces"
-                args = ["-o", junitOutputDir] + this.source.files
+                args = ["-o", this.junitOutputDir] + this.source.files
             } else {
                 if (tests.size() == 0) {
                     main = "clojuresque.tasks.test/test-namespaces"
                     args = this.source.files
                 } else {
                     main = "clojuresque.tasks.test/test-vars"
-                    args = tests
+                    args = this.tests
                 }
             }
         }

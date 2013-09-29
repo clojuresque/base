@@ -23,6 +23,8 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.Delayed
+
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.InputFiles
@@ -36,27 +38,24 @@ import java.io.InputStream
 import groovy.lang.Closure
 
 public class ClojureCompileTask extends ClojureSourceTask {
-    def File destinationDir
-    def FileCollection classpath
-    def SourceDirectorySet clojureRoots
-    def Closure jvmOptions = {}
-
     @OutputDirectory
-    public File getDestinationDir() {
-        return this.destinationDir
-    }
+    @Delayed
+    def destinationDir
 
     @InputFiles
-    public FileCollection getClasspath() {
-        return this.classpath
-    }
+    @Delayed
+    def classpath
+
+    def clojureRoots
+    def jvmOptions = {}
 
     @TaskAction
     public void compile() {
-        if (destinationDir == null) {
+        def destDir = getDestinationDir()
+        if (destDir == null) {
             throw new StopExecutionException("destinationDir not set!")
         }
-        destinationDir.mkdirs()
+        destDir.mkdirs()
 
         List<String> options = []
         if (project.clojure.aotCompile) {
@@ -68,13 +67,12 @@ public class ClojureCompileTask extends ClojureSourceTask {
             options.add("--warn-on-reflection")
         }
 
-
         project.clojureexec {
             project.configure delegate, this.jvmOptions
-            systemProperties "clojure.compile.path": this.destinationDir.path
+            systemProperties "clojure.compile.path": destDir.path
             classpath = project.files(
                 this.clojureRoots.srcDirs,
-                this.destinationDir,
+                destDir,
                 this.classpath
             )
             main = "clojuresque.tasks.compile/main"
@@ -83,8 +81,8 @@ public class ClojureCompileTask extends ClojureSourceTask {
 
         if (!project.clojure.aotCompile) {
             project.copy {
-                from this.source
-                into this.destinationDir
+                from source
+                into destDir
             }
         }
     }

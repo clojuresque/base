@@ -23,6 +23,8 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.Delayed
+
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.InputFiles
@@ -36,40 +38,38 @@ import java.io.InputStream
 import groovy.lang.Closure
 
 public class ClojureDocTask extends ClojureSourceTask {
-    def File destinationDir
-    def FileCollection classpath
-    def SourceDirectorySet clojureRoots
-    def Closure jvmOptions = {}
-
     @OutputDirectory
-    public File getDestinationDir() {
-        return this.destinationDir
-    }
+    @Delayed
+    def destinationDir
 
     @InputFiles
-    public FileCollection getClasspath() {
-        return this.classpath
-    }
+    @Delayed
+    def classpath
+
+    def clojureRoots
+    def jvmOptions = {}
 
     @TaskAction
     public void clojuredoc() {
-        if (destinationDir == null) {
+        def destDir = getDestinationDir()
+        if (destDir == null) {
             throw new StopExecutionException("destinationDir not set!")
         }
+        destDir.mkdirs()
 
         project.clojureexec {
-            project.configure delegate, jvmOptions
+            project.configure delegate, this.jvmOptions
             classpath = project.files(
                 this.clojureRoots.srcDirs,
                 this.classpath
             )
             main = "clojuresque.tasks.doc/main"
             args = [
-                "-d", this.destinationDir.path,
-                "-n", this.project.name ?: "",
-                "-D", this.project.description ?: "",
-                "-v", this.project.version ?: ""
-            ] + this.source*.path
+                "-d", destDir.path,
+                "-n", project.name ?: "",
+                "-D", project.description ?: "",
+                "-v", project.version ?: ""
+            ] + source*.path
         }
     }
 }
