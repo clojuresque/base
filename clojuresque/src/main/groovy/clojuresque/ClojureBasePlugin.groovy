@@ -125,7 +125,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 delayedDestinationDir = {
                     project.file(project.docsDir.path + "/clojuredoc")
                 }
-                jvmOpts = { compileTask.jvmOpts }
+                jvmOptions = { compileTask.jvmOptions }
                 source set.clojure
                 clojureRoots = set.clojure
                 delayedClasspath = { compileTask.classpath }
@@ -144,7 +144,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 type: ClojureTestTask) {
             source project.sourceSets.test.clojure
             testRoots = project.sourceSets.test.clojure
-            delayedJvmOpts = { compileTask.jvmOpts }
+            delayedJvmOptions = { compileTask.jvmOptions }
             delayedClasspath  = { project.configurations.testRuntime }
             delayedClassesDir = { project.sourceSets.main.output.classesDir }
             delayedJunitOutputDir = {
