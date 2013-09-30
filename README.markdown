@@ -112,7 +112,7 @@ dependencies included.
 ## Issues
 
 This is **alpha** software! Expect problems! Please report issues in the
-bugtracker at [the lighthouse tracker][lh]. Or email them to me.
+bugtracker at [bitbucket][bb]. Or email them to me.
 
 General support is available on the [clojuresque google group][cgg].
 
@@ -123,8 +123,8 @@ Frankfurt am Main, January 2010
 [Gradle]: http://www.gradle.org
 [Groovy]: http://groovy.codehaus.org
 [clj]:    http://clojure.org
-[cg]:     http://bitbucket.org/kotarak/clojuresque
-[lh]:     http://kotka.lighthouseapp.com/projects/45093-clojuresque/overview
+[cg]:     http://bitbucket.org/clojuresque/clojuresque
+[bb]:     http://bitbucket.org/clojuresque/clojuresque/issues
 [cr]:     http://clojars.org
 [hudson]: http://build.clojure.org
 [antbug]: https://issues.apache.org/bugzilla/show_bug.cgi?id=41090
