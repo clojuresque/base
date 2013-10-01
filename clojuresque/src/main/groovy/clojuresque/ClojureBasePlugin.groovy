@@ -66,7 +66,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 description = "Clojuresque internal configuration. Don't use!"
             }
             development {
-                transitive = false
+                transitive = true
                 visible = false
                 description = "Development only dependencies"
             }
