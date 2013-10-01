@@ -38,15 +38,16 @@ public class Driver {
         int exitCode = 1;
         final String command = args[0];
 
-        int slash = command.indexOf("/");
-
-        final String namespace = command.substring(0, slash);
-        final String function  = command.substring(slash + 1);
-
         try {
-            require.invoke(symbol.invoke(namespace));
+            require.invoke(symbol.invoke("clojuresque.util"));
+            final Var resolve  = RT.var("clojuresque.util", "resolve-required");
+            final Var driverFn = (Var)resolve.invoke(command);
+
+            if (driverFn == null)
+                throw new Exception(String.format("Unknown command: %s", command));
+
             Boolean result = (Boolean)apply.invoke(
-                    RT.var(namespace, function).deref(),
+                    driverFn.deref(),
                     next.invoke(seq.invoke(args))
             );
             if (result)
