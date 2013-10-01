@@ -80,7 +80,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
     private void configureSourceSets(project) {
         ProjectInternal projectInternal = (ProjectInternal)project
 
-        project.sourceSets.each { sourceSet ->
+        project.sourceSets.all { sourceSet ->
              def clojureSourceSet =
                 new ClojureSourceSet(sourceSet.name, projectInternal.fileResolver)
 
@@ -93,7 +93,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
     }
 
     private void configureCompilation(project) {
-        project.sourceSets.each { set ->
+        project.sourceSets.all { set ->
             if (set.equals(project.sourceSets.test))
                 return
             def compileTaskName = set.getCompileTaskName("clojure")
@@ -117,7 +117,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
     }
 
     private void configureDocs(project) {
-        project.sourceSets.each { set ->
+        project.sourceSets.all { set ->
             if (set.equals(project.sourceSets.test))
                 return
             def compileTaskName = set.getCompileTaskName("clojure")
