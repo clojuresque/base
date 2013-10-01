@@ -39,16 +39,19 @@ public class ClojureReplTask extends DefaultTask {
     def jvmOptions
 
     def port
+    def handler
 
     @TaskAction
     public void startRepl() {
+        def options = [ "--port", port ]
+        if (handler != null)
+            options += [ "--handler", handler ]
+
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             classpath = this.classpath
             main = "clojuresque.tasks.repl/start-repl"
-            args = [
-                "--port", this.port
-            ]
+            args = options
         }
     }
 }
