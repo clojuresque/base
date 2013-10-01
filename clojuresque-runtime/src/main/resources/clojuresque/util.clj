@@ -19,3 +19,11 @@
 (defn namespaces
   [files]
   (distinct (keep namespace-of-file files)))
+
+(defn resolve-required
+  [fully-qualified-sym]
+  (let [slash  (.indexOf ^String fully-qualified-sym "/")
+        nspace (symbol (subs fully-qualified-sym 0 slash))
+        hfn    (symbol (subs fully-qualified-sym (inc slash)))]
+    (require nspace)
+    (ns-resolve nspace hfn)))
