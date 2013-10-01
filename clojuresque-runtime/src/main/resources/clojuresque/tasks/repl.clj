@@ -15,7 +15,8 @@
    [handler  h "handler function" nil]]
   (let [p (Long/parseLong port)
         h (if handler
-            (let [custom-handler (util/resolve-required handler)]
+            (let [custom-handler (binding [*warn-on-reflection* *warn-on-reflection*]
+                                   (util/resolve-required handler))]
               (when-not custom-handler
                 (throw (Exception. (str "Unknown handler Var: " handler))))
               (custom-handler))
