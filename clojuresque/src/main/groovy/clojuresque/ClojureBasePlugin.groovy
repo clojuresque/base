@@ -26,6 +26,7 @@ package clojuresque
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.Upload
 
 import clojuresque.tasks.ClojureCompileTask
@@ -36,6 +37,8 @@ import clojuresque.tasks.ClojureTestTask
 import clojuresque.tasks.ClojureUploadConvention
 
 public class ClojureBasePlugin implements Plugin<Project> {
+    static final String CLOJURE_GROUP = "clojure development"
+
     void apply(Project project) {
         project.apply plugin: "java"
         project.apply plugin: "maven"
@@ -134,6 +137,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 description =
                     String.format("Generate documentation for the %s Clojure source.",
                             set.name)
+                group = JavaBasePlugin.DOCUMENTATION_GROUP
             }
         }
     }
@@ -154,6 +158,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             }
             dependsOn project.tasks.classes, project.configurations.testRuntime
             description = "Run Clojure tests in src/test."
+            group = JavaBasePlugin.VERIFICATION_GROUP
             if (project.hasProperty("clojuresque.test.vars")) {
                 tests = project.getProperty("clojuresque.test.vars").split(",")
             }
@@ -166,7 +171,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             project.sourceSets.main.getCompileTaskName("clojure")
         ]
 
-        def clojureTest = project.task("clojureRepl", type: ClojureReplTask) {
+        project.task("clojureRepl", type: ClojureReplTask) {
             port = 7888
             delayedJvmOptions = { compileTask.jvmOptions }
             delayedClasspath  = {
@@ -181,6 +186,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 )
             }
             description = "Run Clojure repl."
+            group = CLOJURE_GROUP
         }
     }
 

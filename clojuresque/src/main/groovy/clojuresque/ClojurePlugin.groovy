@@ -1,5 +1,5 @@
 /*-
- * Copyright 2009-2012 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -30,7 +30,7 @@ import org.gradle.api.tasks.bundling.Jar
 
 public class ClojurePlugin implements Plugin<Project> {
     public void apply(Project project) {
-        project.apply plugin: ClojureBasePlugin.class
+        project.apply plugin: ClojureBasePlugin
 
         configureUberjar(project)
         configureDepsTask(project)
@@ -41,6 +41,7 @@ public class ClojurePlugin implements Plugin<Project> {
             project.task("uber" + name, type: Jar) {
                 description =
                     'Constructs a jar with all runtime dependencies included'
+                group = ClojureBasePlugin.CLOJURE_GROUP
                 dependsOn jar.source, project.configurations.runtime
                 baseName = jar.baseName + "-standalone"
                 enabled = false
@@ -59,11 +60,10 @@ public class ClojurePlugin implements Plugin<Project> {
     }
 
     private void configureDepsTask(Project project) {
-        Copy deps = project.task("deps", type: Copy)
-
-        deps.configure {
+        project.task("deps", type: Copy) {
             description =
                 'Copy runtime dependencies into the build/lib directory'
+            group = ClojureBasePlugin.CLOJURE_GROUP
             into 'lib'
             from project.configurations.testRuntime
             from project.configurations.development
