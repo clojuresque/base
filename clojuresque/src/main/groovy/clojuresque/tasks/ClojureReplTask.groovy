@@ -35,6 +35,10 @@ public class ClojureReplTask extends DefaultTask {
     @Delayed
     def classpath
 
+    def classpath(Object... fs) {
+        classpath = this.getClasspath().plus(project.files(fs))
+    }
+
     @Delayed
     def jvmOptions
 
