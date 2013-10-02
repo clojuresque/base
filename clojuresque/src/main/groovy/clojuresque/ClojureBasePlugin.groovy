@@ -127,7 +127,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 delayedDestinationDir = {
                     project.file(project.docsDir.path + "/clojuredoc")
                 }
-                jvmOptions = { compileTask.jvmOptions }
+                delayedJvmOptions = { compileTask.jvmOptions }
                 source set.clojure
                 clojureRoots = set.clojure
                 delayedClasspath = { compileTask.classpath }
