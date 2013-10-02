@@ -20,10 +20,16 @@
   [files]
   (distinct (keep namespace-of-file files)))
 
+(defn safe-require
+  [& nspaces]
+  (binding [*unchecked-math*     *unchecked-math*
+            *warn-on-reflection* *warn-on-reflection*]
+    (apply require nspaces)))
+
 (defn resolve-required
   [fully-qualified-sym]
   (let [slash  (.indexOf ^String fully-qualified-sym "/")
         nspace (symbol (subs fully-qualified-sym 0 slash))
         hfn    (symbol (subs fully-qualified-sym (inc slash)))]
-    (require nspace)
+    (safe-require nspace)
     (ns-resolve nspace hfn)))
