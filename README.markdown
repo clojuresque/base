@@ -30,11 +30,6 @@ the [Clojure][] jar must be available also to the Java portion of the project.
   first in the file. Comments may precede the form. The symbol is allowed
   to be fully qualified: `clojure.core/ns`.
 
-* [Clojars][cr] deployment is currently broken, because the clojars server
-  does not like a single Java implementation of ssh. With other servers like
-  the „real“ ssh it works quite well, though. I suspect the issue to be on
-  the clojars side.
-
 ## Usage
 
 Create a `build.gradle` script in the root directory of your project. *Note
@@ -42,43 +37,30 @@ that gradle derives the project name from the name of this directory!*
 
     buildscript {
         repositories {
-            mavenRepo name: 'clojars', urls: 'http://clojars.org/repo'
+            maven { url 'http://clojars.org/repo' }
         }
         dependencies {
-            classpath 'clojuresque:clojuresque:1.4.1'
+            classpath 'clojuresque:clojuresque-base:1.6.0'
         }
     }
     
     group = 'example.group'
     version = '1.0.0'
     
-    apply plugin: 'clojure'
+    apply plugin: 'clojure-min'
     
-    warnOnReflection = true
-    aotCompile = true
+    clojure {
+        warnOnReflection = true
+        aotCompile = true
+    }
     
     repositories {
         mavenCentral()
-        clojarsRepo()
     }
     
     dependencies {
-        compile 'org.clojure:clojure:1.2.1'
+        compile 'org.clojure:clojure:1.5.1'
     }
-
-A small walkthrough:
-
-* The `buildscript` part defines a dependency and automatically fetches
-  clojuresque from Clojars.
-* The `group` and `version` properties define the respective attributes of
-  your project. They are required for the POM generation.
-* `apply` basically loads the clojure plugin.
-* `warnOnReflection` turns on the reflection warnings of the clojure compiler
-* `aotCompile` specifies whether to produce a source jar or an AOT compiled
-  jar. The default is produce a source jar, because they also tend to be
-  smaller. [This issue was discussed on the Google group.][aot]
-* `clojarsRepo` adds the [Clojars Repository][cr].
-* In the `dependencies` section we add a dependency on clojure.
 
 ## Filter
 
@@ -93,22 +75,6 @@ final jar one could use
         clojureExcludeNamespace 'my.project.examples.**.*'
     }
 
-## Clojars Deployment
-
-**Note: Does work only on Unix/Mac OS via shell out to scp. Does not
-work on Windows! Make sure you have an agent running which handles your
-clojars key.**
-
-## Uberjars
-
-As Leiningen, Clojuresque now supports uberjars. That means you can enable
-the `uberjar` task with
-
-    uberjar.enabled = true
-
-Then invoking `gradle ueberjar` will create a jar file with all runtime
-dependencies included.
-
 ## Issues
 
 This is **alpha** software! Expect problems! Please report issues in the
@@ -118,15 +84,11 @@ General support is available on the [clojuresque google group][cgg].
 
 -- 
 Meikel Brandmeyer <mb@kotka.de>
-Frankfurt am Main, January 2010
+Frankfurt am Main, October 2013
 
 [Gradle]: http://www.gradle.org
 [Groovy]: http://groovy.codehaus.org
 [clj]:    http://clojure.org
-[cg]:     http://bitbucket.org/clojuresque/clojuresque
-[bb]:     http://bitbucket.org/clojuresque/clojuresque/issues
-[cr]:     http://clojars.org
-[hudson]: http://build.clojure.org
-[antbug]: https://issues.apache.org/bugzilla/show_bug.cgi?id=41090
-[aot]:    http://groups.google.com/group/clojure/browse_thread/thread/6cef4fcf523f936/3cfe17ba2d2a8a23
+[cg]:     http://bitbucket.org/clojuresque/base
+[bb]:     http://bitbucket.org/clojuresque/base/issues
 [cgg]:    https://groups.google.com/forum/#!forum/clojuresque

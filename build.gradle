@@ -14,22 +14,20 @@ subprojects {
     version = '1.6.0-SNAPSHOT'
 
     ext.kotka = [
-        repository:     "clojuresque/clojuresque",
+        repository:     "clojuresque/base",
         wrapperVersion: "1.8"
     ]
 
-    apply {
-        plugin 'java'
-        plugin 'kotka'
-    }
+    apply plugin: 'java'
+    apply plugin: 'kotka'
 
     repositories {
         mavenCentral()
     }
 }
 
-project(':clojuresque') {
-    description = "A Clojure plugin for gradle"
+project(':clojuresque-base') {
+    description = "A Clojure plugin for gradle (base)"
 
     apply {
         plugin 'groovy'
@@ -64,8 +62,8 @@ project(':clojuresque') {
     }
 }
 
-project(':clojuresque-runtime') {
-    description = "A Clojure plugin for gradle (runtime files)"
+project(':clojuresque-base-runtime') {
+    description = "A Clojure plugin for gradle (base runtime files)"
 
     configurations {
         clojure

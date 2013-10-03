@@ -52,6 +52,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             new ClojureRepositoryConvention(repos)
 
         configureConfigurations(project)
+        configureRuntime(project)
         configureSourceSets(project)
         configureCompilation(project)
         configureDocs(project)
@@ -72,9 +73,15 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 description = "Development only dependencies"
             }
         }
+    }
+
+    private void configureRuntime(project) {
+        def props = Util.properties("base")
+
         project.dependencies {
-            clojuresque group: "clojuresque", name: "clojuresque-runtime",
-                version: Util.properties.getProperty("clojuresque.version")
+            clojuresque group: "clojuresque",
+                name: "clojuresque-base-runtime",
+                version: props.getProperty("clojuresque.base.version")
         }
     }
 

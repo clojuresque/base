@@ -28,16 +28,12 @@ import org.slf4j.Logger
 import java.util.Properties
 
 class Util {
-    static Properties props = null;
+    static Properties properties(plugin) {
+        def props = new Properties()
 
-    static Properties getProperties() {
-        if (props == null) {
-            props = new Properties()
-
-            Util.class.
-                getResourceAsStream("clojuresque.properties").
-                withReader("UTF-8") { props.load it }
-        }
+        Util.class.
+            getResourceAsStream("${plugin}.properties").
+            withReader("UTF-8") { props.load it }
 
         return props
     }

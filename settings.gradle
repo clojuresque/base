@@ -1,3 +1,3 @@
-rootProject.name = 'root'
-include 'clojuresque'
-include 'clojuresque-runtime'
+rootProject.name = 'root-base'
+include 'clojuresque-base'
+include 'clojuresque-base-runtime'
