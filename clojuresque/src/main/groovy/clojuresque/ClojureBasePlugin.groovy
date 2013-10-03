@@ -31,7 +31,6 @@ import org.gradle.api.tasks.Upload
 
 import clojuresque.tasks.ClojureCompileTask
 import clojuresque.tasks.ClojureDocTask
-import clojuresque.tasks.ClojureReplTask
 import clojuresque.tasks.ClojureSourceSet
 import clojuresque.tasks.ClojureTestTask
 import clojuresque.tasks.ClojureUploadConvention
@@ -57,7 +56,6 @@ public class ClojureBasePlugin implements Plugin<Project> {
         configureCompilation(project)
         configureDocs(project)
         configureTests(project)
-        configureRepl(project)
         configureClojarsUpload(project)
     }
 
@@ -164,30 +162,6 @@ public class ClojureBasePlugin implements Plugin<Project> {
             }
         }
         project.tasks.test.dependsOn clojureTest
-    }
-
-    private void configureRepl(project) {
-        def compileTask = project.tasks[
-            project.sourceSets.main.getCompileTaskName("clojure")
-        ]
-
-        project.task("clojureRepl", type: ClojureReplTask) {
-            port = 7888
-            delayedJvmOptions = { compileTask.jvmOptions }
-            delayedClasspath  = {
-                def sourceRoots = project.sourceSets.collect {
-                    it.allSource.srcDirs
-                }
-
-                project.files(
-                    sourceRoots,
-                    project.configurations.testRuntime,
-                    project.configurations.development
-                )
-            }
-            description = "Run Clojure repl."
-            group = CLOJURE_GROUP
-        }
     }
 
     private void configureClojarsUpload(project) {
