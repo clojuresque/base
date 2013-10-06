@@ -40,10 +40,10 @@ public class ClojureBasePlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.apply plugin: "java"
-        project.apply plugin: "maven"
+        project.apply plugin: "clojure-common"
 
-        project.convention.plugins.clojure =
-            new ClojurePluginConvention(project)
+        project.convention.plugins.clojureDeprecated =
+            new ClojurePluginDeprecatedConvention(project)
 
         project.extensions.create("clojure", ClojurePluginExtension)
 
@@ -51,28 +51,12 @@ public class ClojureBasePlugin implements Plugin<Project> {
         repos.convention.plugins.clojure =
             new ClojureRepositoryConvention(repos)
 
-        configureConfigurations(project)
         configureRuntime(project)
         configureSourceSets(project)
         configureCompilation(project)
         configureDocs(project)
         configureTests(project)
         configureClojarsUpload(project)
-    }
-
-    private void configureConfigurations(project) {
-        project.configurations {
-            clojuresque {
-                transitive = false
-                visible = false
-                description = "Clojuresque internal configuration. Don't use!"
-            }
-            development {
-                transitive = true
-                visible = false
-                description = "Development only dependencies"
-            }
-        }
     }
 
     private void configureRuntime(project) {

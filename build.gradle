@@ -37,6 +37,7 @@ project(':clojuresque-base') {
         compile gradleApi()
         compile localGroovy()
 
+        compile "clojuresque:clojuresque-common:1.0.0-SNAPSHOT"
         compile "de.kotka.gradle:gradle-utils:0.1.1"
 
         testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
@@ -65,26 +66,9 @@ project(':clojuresque-base') {
 project(':clojuresque-base-runtime') {
     description = "A Clojure plugin for gradle (base runtime files)"
 
-    configurations {
-        clojure
-    }
-
     dependencies {
-        clojure 'org.clojure:clojure:1.5.1'
+        compile "clojuresque:clojuresque-common-runtime:1.0.0-SNAPSHOT"
     }
-
-    sourceSets.main {
-        compileClasspath = project.files(
-            compileClasspath,
-            project.configurations.clojure
-        )
-    }
-
-    compileJava {
-        sourceCompatibility = "1.6"
-        targetCompatibility = "1.6"
-    }
-
 }
 
 task wrapper(type: Wrapper) {

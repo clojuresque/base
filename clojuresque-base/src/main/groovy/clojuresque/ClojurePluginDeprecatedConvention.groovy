@@ -1,5 +1,5 @@
 /*-
- * Copyright 2012,2013 © Meikel Brandmeyer.
+ * Copyright 2009-2013 © Meikel Brandmeyer.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -23,22 +23,36 @@
 
 package clojuresque
 
+import org.gradle.api.Project
+
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-import java.util.Properties
+class ClojurePluginDeprecatedConvention {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClojurePluginConvention)
+    private final Project project
 
-class Util {
-    static Properties properties(plugin) {
-        def props = new Properties()
-
-        Util.class.
-            getResourceAsStream("${plugin}.properties").
-            withReader("UTF-8") { props.load it }
-
-        return props
+    public ClojurePluginDeprecatedConvention(Project project) {
+        this.project = project
     }
 
-    static deprecationWarning(Logger l, String o, String n) {
-        l.warn(String.format("'%s' is deprecated and will go away in a future version. Please use '%s' instead.", o, n))
+    public void setAotCompile(boolean f) {
+        Util.deprecationWarning(LOGGER, "aotCompile", "clojure.aotCompile")
+        project.clojure.aotCompile = f
+    }
+
+    public boolean getAotCompile() {
+        Util.deprecationWarning(LOGGER, "aotCompile", "clojure.aotCompile")
+        return project.clojure.aotCompile
+    }
+
+    public void setWarnOnReflection(boolean f) {
+        Util.deprecationWarning(LOGGER, "warnOnReflection", "clojure.warnOnReflection")
+        project.clojure.warnOnReflection = f
+    }
+
+    public boolean getWarnOnReflection() {
+        Util.deprecationWarning(LOGGER, "warnOnReflection", "clojure.warnOnReflection")
+        return project.clojure.warnOnReflection
     }
 }
