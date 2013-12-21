@@ -38,7 +38,7 @@ project(':clojuresque-base') {
         compile localGroovy()
 
         compile "clojuresque:clojuresque-common:1.0.0-SNAPSHOT"
-        compile "de.kotka.gradle:gradle-utils:0.1.1"
+        compile "de.kotka.gradle:gradle-utils:0.2.0-SNAPSHOT"
 
         testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
