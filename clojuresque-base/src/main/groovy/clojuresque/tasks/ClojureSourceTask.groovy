@@ -23,9 +23,9 @@
 
 package clojuresque.tasks
 
-import org.gradle.api.tasks.SourceTask
+import kotka.gradle.utils.tasks.SourceDirectoryTask
 
-public class ClojureSourceTask extends SourceTask {
+public class ClojureSourceTask extends SourceDirectoryTask {
     /* Duplicate the functionality of ClojureSourceSet. */
     public ClojureSourceTask includeNamespace(String pattern) {
         include(pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj")

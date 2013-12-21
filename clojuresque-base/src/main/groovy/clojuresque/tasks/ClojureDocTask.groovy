@@ -47,8 +47,6 @@ public class ClojureDocTask extends ClojureSourceTask {
     @Delayed
     def classpath
 
-    def clojureRoots
-
     @Delayed
     def jvmOptions
 
@@ -63,7 +61,7 @@ public class ClojureDocTask extends ClojureSourceTask {
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
-                this.clojureRoots.srcDirs,
+                this.srcDirs,
                 this.classpath
             )
             main = "clojuresque.tasks.doc/main"

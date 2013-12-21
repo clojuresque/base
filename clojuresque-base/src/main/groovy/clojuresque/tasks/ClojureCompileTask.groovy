@@ -50,8 +50,6 @@ public class ClojureCompileTask extends ClojureSourceTask {
     def dirMode  = null
     def fileMode = null
 
-    def clojureRoots
-
     @Delayed
     def jvmOptions = {}
 
@@ -77,7 +75,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
             ConfigureUtil.configure delegate, this.jvmOptions
             systemProperties "clojure.compile.path": destDir.path
             classpath = project.files(
-                this.clojureRoots.srcDirs,
+                this.srcDirs,
                 destDir,
                 this.classpath
             )
@@ -90,7 +88,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
                 dirMode  = this.dirMode
                 fileMode = this.fileMode
 
-                from source
+                from srcDirs
                 into destDir
             }
         }

@@ -77,9 +77,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 new ClojureSourceSet(sourceSet.name, projectInternal.fileResolver)
 
             sourceSet.convention.plugins.clojure = clojureSourceSet
-            sourceSet.clojure.srcDirs = [
-                String.format("src/%s/clojure", sourceSet.name)
-            ]
+            sourceSet.clojure.srcDir "src/${sourceSet.name}/clojure"
             sourceSet.allSource.source(clojureSourceSet.clojure)
         }
     }
@@ -92,17 +90,14 @@ public class ClojureBasePlugin implements Plugin<Project> {
             def task = project.task(compileTaskName,
                     type: ClojureCompileTask) {
                 delayedDestinationDir = { set.output.classesDir }
-                source set.clojure
-                clojureRoots = set.clojure
+                srcDir { set.clojure.srcDirs }
                 delayedClasspath = {
                     project.files(
                         set.compileClasspath,
                         project.configurations.development
                     )
                 }
-                description =
-                    String.format("Compile the %s Clojure source.",
-                            set.name)
+                description = "Compile the ${set.name} Clojure source."
             }
             project.tasks[set.classesTaskName].dependsOn task
         }
@@ -120,12 +115,10 @@ public class ClojureBasePlugin implements Plugin<Project> {
                     project.file(project.docsDir.path + "/clojuredoc")
                 }
                 delayedJvmOptions = { compileTask.jvmOptions }
-                source set.clojure
-                clojureRoots = set.clojure
+                srcDir { set.clojure.srcDirs }
                 delayedClasspath = { compileTask.classpath }
                 description =
-                    String.format("Generate documentation for the %s Clojure source.",
-                            set.name)
+                    "Generate documentation for the ${set.name} Clojure source."
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
             }
         }
@@ -137,8 +130,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
         ]
         def clojureTest = project.task("clojureTest",
                 type: ClojureTestTask) {
-            source project.sourceSets.test.clojure
-            testRoots = project.sourceSets.test.clojure
+            srcDir { project.sourceSets.test.clojure.srcDirs }
             delayedJvmOptions = { compileTask.jvmOptions }
             delayedClasspath  = { project.configurations.testRuntime }
             delayedClassesDir = { project.sourceSets.main.output.classesDir }

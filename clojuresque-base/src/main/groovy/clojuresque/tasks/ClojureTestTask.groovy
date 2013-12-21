@@ -44,8 +44,6 @@ public class ClojureTestTask extends ClojureSourceTask {
     @Delayed
     def classpath
 
-    def testRoots
-
     @Delayed
     def jvmOptions
     def junit = false
@@ -60,7 +58,7 @@ public class ClojureTestTask extends ClojureSourceTask {
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
-                this.testRoots.srcDirs,
+                this.srcDirs,
                 this.classesDir,
                 this.classpath
             )
