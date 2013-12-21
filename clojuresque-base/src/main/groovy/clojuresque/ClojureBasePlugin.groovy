@@ -89,7 +89,9 @@ public class ClojureBasePlugin implements Plugin<Project> {
             def compileTaskName = set.getCompileTaskName("clojure")
             def task = project.task(compileTaskName,
                     type: ClojureCompileTask) {
-                delayedDestinationDir = { set.output.classesDir }
+                delayedAotCompile       = { project.clojure.aotCompile }
+                delayedWarnOnReflection = { project.clojure.warnOnReflection }
+                delayedDestinationDir   = { set.output.classesDir }
                 srcDir { set.clojure.srcDirs }
                 delayedClasspath = {
                     project.files(

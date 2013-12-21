@@ -28,6 +28,7 @@ import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
@@ -47,6 +48,14 @@ public class ClojureCompileTask extends ClojureSourceTask {
     @Delayed
     def classpath
 
+    @Input
+    @Delayed
+    def aotCompile = false
+
+    @Input
+    @Delayed
+    def warnOnReflection = false
+
     def dirMode  = null
     def fileMode = null
 
@@ -62,12 +71,12 @@ public class ClojureCompileTask extends ClojureSourceTask {
         destDir.mkdirs()
 
         List<String> options = []
-        if (project.clojure.aotCompile) {
+        if (getAotCompile()) {
             options.add("--compile")
         } else {
             options.add("--require")
         }
-        if (project.clojure.warnOnReflection) {
+        if (getWarnOnReflection()) {
             options.add("--warn-on-reflection")
         }
 
@@ -83,7 +92,7 @@ public class ClojureCompileTask extends ClojureSourceTask {
             args = options + this.source.files
         }
 
-        if (!project.clojure.aotCompile) {
+        if (!getAotCompile()) {
             project.copy {
                 dirMode  = this.dirMode
                 fileMode = this.fileMode
