@@ -23,10 +23,17 @@
 
 package clojuresque.tasks
 
+import kotka.gradle.utils.Delayed
 import kotka.gradle.utils.tasks.GenericSourceSet
 
 @GenericSourceSet(sourceName="clojure", sourcePatterns=["**/*.clj"])
 class ClojureSourceSet {
+    @Delayed
+    def aotCompile = false
+
+    @Delayed
+    def warnOnReflection = false
+
     public void clojureIncludeNamespace(String pattern) {
         clojure.include(
             pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj"
