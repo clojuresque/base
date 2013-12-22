@@ -28,6 +28,7 @@ import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
@@ -50,6 +51,12 @@ public class ClojureDocTask extends ClojureSourceTask {
     @Delayed
     def jvmOptions
 
+    @Input
+    def sourceDirectoryURI = ""
+
+    @Input
+    def linenumAnchorPrefix = ""
+
     @TaskAction
     public void clojuredoc() {
         def destDir = getDestinationDir()
@@ -70,8 +77,19 @@ public class ClojureDocTask extends ClojureSourceTask {
                 "-n", project.name ?: "",
                 "-D", project.description ?: "",
                 "-v", project.version ?: "",
-                "-s", this.srcDirs.files*.path.join(File.pathSeparator)
+                "-l", this.linenumAnchorPrefix,
+                "-u", this.sourceDirectoryURI,
+                "-s", this.srcDirs.files.collect {
+                    relativize(it, project.projectDir)
+                }.join(File.pathSeparator)
             ] + source*.path
         }
+    }
+
+    def relativize(path, projectDir) {
+        def pathS = path.path
+        def pdirS = projectDir.path
+
+        pathS.substring(pdirS.length() + 1)
     }
 }
