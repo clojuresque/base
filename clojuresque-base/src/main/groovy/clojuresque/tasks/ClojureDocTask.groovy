@@ -69,7 +69,8 @@ public class ClojureDocTask extends ClojureSourceTask {
                 "-d", destDir.path,
                 "-n", project.name ?: "",
                 "-D", project.description ?: "",
-                "-v", project.version ?: ""
+                "-v", project.version ?: "",
+                "-s", this.srcDirs.files*.path.join(File.pathSeparator)
             ] + source*.path
         }
     }

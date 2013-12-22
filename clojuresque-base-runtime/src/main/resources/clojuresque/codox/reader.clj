@@ -17,7 +17,6 @@
 (defn- sorted-public-vars [namespace]
   (->> (ns-publics namespace)
        (vals)
-       (filter (comp :doc meta))
        (sort-by (comp :name meta))))
 
 (defn- skip-public? [var]
@@ -34,7 +33,7 @@
 
 (defn- read-ns [namespace]
   (try
-    (require namespace :reload)
+    (require namespace)
     (-> (find-ns namespace)
         (meta)
         (assoc :name namespace)
@@ -48,10 +47,16 @@
   (and (.isFile file)
        (-> file .getName (.endsWith ".jar"))))
 
+(defn- clj-file? [file]
+  (and (.isFile file)
+       (-> file .getName (.endsWith ".clj"))))
+
 (defn- find-namespaces [file]
-  (if (jar-file? file)
-    (ns/find-namespaces-in-jarfile (JarFile. file))
-    (ns/find-namespaces-in-dir file)))
+  (cond
+    (.isDirectory file) (ns/find-namespaces-in-dir file)
+    (jar-file? file)    (ns/find-namespaces-in-jarfile (JarFile. file))
+    (clj-file? file)    (when-let [nspace (second (ns/read-file-ns-decl file))]
+                          [nspace])))
 
 (defn read-namespaces
   "Read namespaces from a source directory (defaults to \"src\"), and

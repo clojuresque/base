@@ -1,6 +1,6 @@
 (ns clojuresque.codox.main
   "Main namespace for generating documentation"
-  (:use [clojuresque.codox.utils :only (ns-filter)]
+  (:use [clojuresque.codox.utils :only (ns-filter add-source-paths)]
         [clojuresque.codox.reader :only (read-namespaces)]))
 
 (defn- writer [{:keys [writer]}]
@@ -20,8 +20,9 @@
   "Generate documentation from source files."
   ([]
      (generate-docs {}))
-  ([{:keys [sources include exclude] :as options}]
+  ([{:keys [sources source-dirs include exclude] :as options}]
      (let [namespaces (-> (apply read-namespaces sources)
-                          (ns-filter include exclude))
+                          #_(ns-filter include exclude)
+                          (add-source-paths source-dirs))
            write (writer options)]
        (write (assoc options :namespaces namespaces)))))
