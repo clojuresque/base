@@ -3,7 +3,7 @@
   (:use [clojuresque.codox.utils :only (unindent)])
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojuresque.clojure.tools.namespace :as ns])
+            [clojuresque.util :as util])
   (:import java.util.jar.JarFile))
 
 (defn- correct-indent [text]
@@ -32,31 +32,17 @@
         (update-in [:doc] correct-indent))))
 
 (defn- read-ns [namespace]
-  (try
-    (require namespace)
-    (-> (find-ns namespace)
-        (meta)
-        (assoc :name namespace)
-        (assoc :publics (read-publics namespace))
-        (update-in [:doc] correct-indent)
-        (list))
-    (catch Exception e
-      (println "Could not generate documentation for" namespace))))
-
-(defn- jar-file? [file]
-  (and (.isFile file)
-       (-> file .getName (.endsWith ".jar"))))
-
-(defn- clj-file? [file]
-  (and (.isFile file)
-       (-> file .getName (.endsWith ".clj"))))
-
-(defn- find-namespaces [file]
-  (cond
-    (.isDirectory file) (ns/find-namespaces-in-dir file)
-    (jar-file? file)    (ns/find-namespaces-in-jarfile (JarFile. file))
-    (clj-file? file)    (when-let [nspace (second (ns/read-file-ns-decl file))]
-                          [nspace])))
+  (when namespace
+    (try
+      (require namespace)
+      (-> (find-ns namespace)
+          (meta)
+          (assoc :name namespace)
+          (assoc :publics (read-publics namespace))
+          (update-in [:doc] correct-indent)
+          (list))
+      (catch Exception e
+        (println "Could not generate documentation for" namespace)))))
 
 (defn read-namespaces
   "Read namespaces from a source directory (defaults to \"src\"), and
@@ -74,11 +60,9 @@
       :doc      - the doc-string of the var
       :macro    - true if the var is a macro
       :added    - the library version the var was added in"
-  ([]
-     (read-namespaces "src"))
   ([path]
-     (->> (io/file path)
-          (find-namespaces)
-          (mapcat read-ns)))
+     (->> path
+          util/namespace-of-file
+          read-ns))
   ([path & paths]
      (mapcat read-namespaces (cons path paths))))
