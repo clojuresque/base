@@ -24,6 +24,10 @@ subprojects {
     repositories {
         mavenCentral()
     }
+
+    ext.clojuresquePlugins = [
+        common: "1.1.0"
+    ]
 }
 
 project(':clojuresque-base') {
@@ -37,7 +41,9 @@ project(':clojuresque-base') {
         compile gradleApi()
         compile localGroovy()
 
-        compile "clojuresque:clojuresque-common:1.1.0-SNAPSHOT"
+        project.clojuresquePlugins.each { plugin, version ->
+            compile "clojuresque:clojuresque-${plugin}:${version}"
+        }
         compile "de.kotka.gradle:gradle-utils:0.2.1"
 
         testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
@@ -67,7 +73,9 @@ project(':clojuresque-base-runtime') {
     description = "A Clojure plugin for gradle (base runtime files)"
 
     dependencies {
-        compile "clojuresque:clojuresque-common-runtime:1.0.0"
+        project.clojuresquePlugins.each { plugin, version ->
+            compile "clojuresque:clojuresque-${plugin}-runtime:${version}"
+        }
     }
 }
 
