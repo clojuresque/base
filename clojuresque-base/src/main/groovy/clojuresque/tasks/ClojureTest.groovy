@@ -30,6 +30,7 @@ import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
@@ -48,13 +49,15 @@ public class ClojureTest extends ClojureSourceTask {
     def classpath
 
     @Delayed
-    def jvmOptions
+    def jvmOptions = {}
+
+    @Input
     def junit = false
 
     @Delayed
-    def junitOutputDir
+    def junitOutputDir = null
 
-    def List<String> tests = []
+    def tests = []
 
     @TaskAction
     public void runTests() {
