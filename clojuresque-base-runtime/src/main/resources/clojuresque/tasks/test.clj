@@ -1,24 +1,23 @@
 (ns clojuresque.tasks.test
+  (:require
+    [clojuresque.tasks.test-junit :as test-junit])
   (:use
-    [clojure.test :only (run-tests) :as t]
-    [clojuresque.cli :only (deftask)]
-    [clojuresque.util :only (namespaces)]))
+    [clojuresque.util :only (deftask namespaces)]
+    [clojure.test :only (run-tests) :as t]))
 
 (defn check-result
   [result]
   (and (zero? (:fail result)) (zero? (:error result))))
 
-(deftask test-namespaces
-  "Run all tests in the namespaces of the given files by virtue of clojure.test."
-  [files]
-  (let [namespaces (namespaces files)]
+(defn test-namespaces
+  [{:keys [source-files]}]
+  (let [namespaces (namespaces source-files)]
     (apply require namespaces)
     (check-result (apply run-tests namespaces))))
 
 ; For now: do stuff manually for explicitly named tests.
-(deftask test-vars
-  "Run only the named tests by virtue of clojure.test."
-  [tests]
+(defn test-vars
+  [{:keys [tests]}]
   (let [tests (group-by (comp symbol namespace) (map read-string tests))]
     (apply require (keys tests))
     (binding [t/*report-counters* (ref t/*initial-report-counters*)]
@@ -38,3 +37,10 @@
       (let [summary (assoc @t/*report-counters* :type :summary)]
         (t/do-report summary)
         (check-result summary)))))
+
+(deftask main
+  [{:keys [junit tests] :as options}]
+  (cond
+    junit       (test-junit/test-namespaces options)
+    (seq tests) (test-vars options)
+    :else       (test-namespaces options)))

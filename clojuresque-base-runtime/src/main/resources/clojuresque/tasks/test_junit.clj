@@ -2,7 +2,6 @@
   (:use
     [clojure.test :only (run-tests report successful? *test-out*) :as t]
     [clojure.test.junit :only (junit-report with-junit-output) :as j]
-    [clojuresque.cli :only (deftask)]
     [clojuresque.util :only (namespaces)]))
 
 
@@ -48,14 +47,9 @@
       (with-junit-output
         (run-tests namespace)))))
   
-(deftask test-namespaces
-  "Run all tests in the namespaces of the given files by virtue of clojure.test with additional junit output.
-   Writes test output to a file called <namespace>.xml in <output-dir>
-   XML escapes *out* so that it's safe for inclusion in the JUnit XML report file." 
-  [[output-dir o "Directory to wirite JUnit XML result files."]
-   files]
-  (.mkdir (java.io.File. output-dir))
-  (let [namespaces (namespaces files)]
+(defn test-namespaces
+  [{:keys [junit-output-dir source-files]}]
+  (let [namespaces (namespaces source-files)]
     (apply require namespaces)
     (let [results (atom {:type :summary})
           current-ns (atom nil)
@@ -77,7 +71,7 @@
                                  (swap! results add-counters (dissoc x :type))))]
         ; test each namespace individually to allow per ns reporting of failures at the end
         (doseq [namespace namespaces]
-          (test-namespace-with-junit-output namespace output-dir))
+          (test-namespace-with-junit-output namespace junit-output-dir))
         (if (:test @results)
           (do
             (println "\nTotals:")
@@ -95,4 +89,3 @@
                 (println)
                 false)))
           true)))))
-

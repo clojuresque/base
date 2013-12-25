@@ -23,12 +23,15 @@
 
 package clojuresque.tasks
 
+import clojuresque.Util
+
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
 import java.io.File
@@ -55,6 +58,21 @@ public class ClojureTest extends ClojureSourceTask {
 
     @TaskAction
     public void runTests() {
+        def junitDir = getJunitOutputDir()
+        if (junit) {
+            if (junitDir == null) {
+                throw new StopExecutionException("junitOutputDir is not set!")
+            }
+            junitDir.mkdirs()
+        }
+
+        def options = [
+            sourceFiles:    source.files*.path,
+            tests:          tests,
+            junit:          junit,
+            junitOutputDir: junitDir?.path,
+        ]
+
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
@@ -62,18 +80,8 @@ public class ClojureTest extends ClojureSourceTask {
                 this.classesDir,
                 this.classpath
             )
-            if (junit) {
-                main = "clojuresque.tasks.test-junit/test-namespaces"
-                args = ["-o", this.junitOutputDir] + this.source.files
-            } else {
-                if (tests.size() == 0) {
-                    main = "clojuresque.tasks.test/test-namespaces"
-                    args = this.source.files
-                } else {
-                    main = "clojuresque.tasks.test/test-vars"
-                    args = this.tests
-                }
-            }
+            main = "clojuresque.tasks.test/main"
+            standardInput = Util.optionsToStream(options)
         }
     }
 }
