@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "de.kotka.gradle:gradle-plugin:1.1.0"
+        classpath "de.kotka.gradle:gradle-plugin:1.2.0"
     }
 }
 
