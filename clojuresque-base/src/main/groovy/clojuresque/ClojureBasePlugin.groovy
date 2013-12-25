@@ -23,17 +23,17 @@
 
 package clojuresque
 
+import clojuresque.tasks.ClojureCompile
+import clojuresque.tasks.ClojureDoc
+import clojuresque.tasks.ClojureSourceSet
+import clojuresque.tasks.ClojureTest
+import clojuresque.tasks.ClojureUploadConvention
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.Upload
-
-import clojuresque.tasks.ClojureCompileTask
-import clojuresque.tasks.ClojureDocTask
-import clojuresque.tasks.ClojureSourceSet
-import clojuresque.tasks.ClojureTestTask
-import clojuresque.tasks.ClojureUploadConvention
 
 public class ClojureBasePlugin implements Plugin<Project> {
     static final String CLOJURE_GROUP = "clojure development"
@@ -90,8 +90,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             if (set.equals(project.sourceSets.test))
                 return
             def compileTaskName = set.getCompileTaskName("clojure")
-            def task = project.task(compileTaskName,
-                    type: ClojureCompileTask) {
+            def task = project.task(compileTaskName, type: ClojureCompile) {
                 delayedAotCompile       = { set.aotCompile }
                 delayedWarnOnReflection = { set.warnOnReflection }
                 delayedDestinationDir   = { set.output.classesDir }
@@ -115,7 +114,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             def compileTaskName = set.getCompileTaskName("clojure")
             def docTaskName = set.getTaskName(null, "clojuredoc")
             def compileTask = project.tasks[compileTaskName]
-            def task = project.task(docTaskName, type: ClojureDocTask) {
+            def task = project.task(docTaskName, type: ClojureDoc) {
                 delayedDestinationDir = {
                     project.file(project.docsDir.path + "/clojuredoc")
                 }
@@ -133,8 +132,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
         def compileTask = project.tasks[
             project.sourceSets.main.getCompileTaskName("clojure")
         ]
-        def clojureTest = project.task("clojureTest",
-                type: ClojureTestTask) {
+        def clojureTest = project.task("clojureTest", type: ClojureTest) {
             srcDir { project.sourceSets.test.clojure.srcDirs }
             delayedJvmOptions = { compileTask.jvmOptions }
             delayedClasspath  = { project.configurations.testRuntime }

@@ -36,7 +36,7 @@ import java.io.InputStream
 
 import groovy.lang.Closure
 
-public class ClojureTestTask extends ClojureSourceTask {
+public class ClojureTest extends ClojureSourceTask {
     @Delayed
     def classesDir
 

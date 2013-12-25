@@ -39,7 +39,7 @@ import java.io.InputStream
 
 import groovy.lang.Closure
 
-public class ClojureCompileTask extends ClojureSourceTask {
+public class ClojureCompile extends ClojureSourceTask {
     @OutputDirectory
     @Delayed
     def destinationDir
