@@ -23,6 +23,8 @@
 
 package clojuresque.tasks
 
+import clojuresque.Util
+
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
@@ -70,15 +72,11 @@ public class ClojureCompile extends ClojureSourceTask {
         }
         destDir.mkdirs()
 
-        List<String> options = []
-        if (getAotCompile()) {
-            options.add("--compile")
-        } else {
-            options.add("--require")
-        }
-        if (getWarnOnReflection()) {
-            options.add("--warn-on-reflection")
-        }
+        def options = [
+            compileMode:      (getAotCompile()) ? "compile" : "require",
+            warnOnReflection: (getWarnOnReflection()),
+            sourceFiles:      source.files.collect { it.path }
+        ]
 
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
@@ -89,7 +87,7 @@ public class ClojureCompile extends ClojureSourceTask {
                 this.classpath
             )
             main = "clojuresque.tasks.compile/main"
-            args = options + this.source.files
+            standardInput = Util.optionsToStream(options)
         }
 
         if (!getAotCompile()) {
