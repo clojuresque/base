@@ -28,20 +28,13 @@ import clojuresque.Util
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
-import java.io.File
-import java.io.InputStream
-
-import groovy.lang.Closure
-
-public class ClojureDoc extends ClojureSourceTask {
+class ClojureDoc extends ClojureSourceTask {
     @OutputDirectory
     @Delayed
     def destinationDir
@@ -57,7 +50,7 @@ public class ClojureDoc extends ClojureSourceTask {
     def codox = [:]
 
     @TaskAction
-    public void clojuredoc() {
+    void clojuredoc() {
         def destDir = getDestinationDir()
         if (destDir == null) {
             throw new StopExecutionException("destinationDir not set!")

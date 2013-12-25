@@ -28,19 +28,12 @@ import clojuresque.Util
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
-import java.io.File
-import java.io.InputStream
-
-import groovy.lang.Closure
-
-public class ClojureTest extends ClojureSourceTask {
+class ClojureTest extends ClojureSourceTask {
     @Delayed
     def classesDir
 
@@ -60,7 +53,7 @@ public class ClojureTest extends ClojureSourceTask {
     def tests = []
 
     @TaskAction
-    public void runTests() {
+    void runTests() {
         def junitDir = getJunitOutputDir()
         if (junit) {
             if (junitDir == null) {

@@ -28,20 +28,13 @@ import clojuresque.Util
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
-import java.io.File
-import java.io.InputStream
-
-import groovy.lang.Closure
-
-public class ClojureCompile extends ClojureSourceTask {
+class ClojureCompile extends ClojureSourceTask {
     @OutputDirectory
     @Delayed
     def destinationDir
@@ -65,7 +58,7 @@ public class ClojureCompile extends ClojureSourceTask {
     def jvmOptions = {}
 
     @TaskAction
-    public void compile() {
+    void compile() {
         def destDir = getDestinationDir()
         if (destDir == null) {
             throw new StopExecutionException("destinationDir not set!")
