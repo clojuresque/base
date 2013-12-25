@@ -23,6 +23,8 @@
 
 package clojuresque.tasks
 
+import clojuresque.Util
+
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
@@ -52,10 +54,7 @@ public class ClojureDoc extends ClojureSourceTask {
     def jvmOptions
 
     @Input
-    def sourceDirectoryURI = ""
-
-    @Input
-    def linenumAnchorPrefix = ""
+    def codox = [:]
 
     @TaskAction
     public void clojuredoc() {
@@ -65,6 +64,21 @@ public class ClojureDoc extends ClojureSourceTask {
         }
         destDir.mkdirs()
 
+        def options = [
+            destinationDir:  destDir.path,
+            project: [
+                name:        project.name ?: "",
+                description: project.description ?: "",
+                version:     project.version ?: ""
+            ],
+            codox:           codox,
+            sourceDirs:      srcDirs.files.collect {
+                relativize(it, project.projectDir)
+            },
+            sourceFiles:     source*.path
+        ]
+
+
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
@@ -72,17 +86,7 @@ public class ClojureDoc extends ClojureSourceTask {
                 this.classpath
             )
             main = "clojuresque.tasks.doc/main"
-            args = [
-                "-d", destDir.path,
-                "-n", project.name ?: "",
-                "-D", project.description ?: "",
-                "-v", project.version ?: "",
-                "-l", this.linenumAnchorPrefix,
-                "-u", this.sourceDirectoryURI,
-                "-s", this.srcDirs.files.collect {
-                    relativize(it, project.projectDir)
-                }.join(File.pathSeparator)
-            ] + source*.path
+            standardInput = Util.optionsToStream(options)
         }
     }
 
