@@ -93,10 +93,10 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 return
             def compileTaskName = set.getCompileTaskName("clojure")
             def task = project.task(compileTaskName, type: ClojureCompile) {
+                from set.clojure
                 delayedAotCompile       = { set.clojure.aotCompile }
                 delayedWarnOnReflection = { set.clojure.warnOnReflection }
                 delayedDestinationDir   = { set.output.classesDir }
-                srcDir { set.clojure.srcDirs }
                 delayedClasspath = {
                     project.files(
                         set.compileClasspath,
@@ -117,11 +117,11 @@ public class ClojureBasePlugin implements Plugin<Project> {
             def docTaskName = set.getTaskName(null, "clojuredoc")
             def compileTask = project.tasks[compileTaskName]
             def task = project.task(docTaskName, type: ClojureDoc) {
+                from set.clojure
                 delayedDestinationDir = {
                     project.file(project.docsDir.path + "/clojuredoc")
                 }
                 delayedJvmOptions = { compileTask.jvmOptions }
-                srcDir { set.clojure.srcDirs }
                 delayedClasspath = { compileTask.classpath }
                 description =
                     "Generate documentation for the ${set.name} Clojure source."
@@ -135,7 +135,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
             project.sourceSets.main.getCompileTaskName("clojure")
         ]
         def clojureTest = project.task("clojureTest", type: ClojureTest) {
-            srcDir { project.sourceSets.test.clojure.srcDirs }
+            from project.sourceSets.test.clojure
             delayedJvmOptions = { compileTask.jvmOptions }
             delayedClasspath  = { project.configurations.testRuntime }
             delayedClassesDir = { project.sourceSets.main.output.classesDir }
