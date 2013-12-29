@@ -33,9 +33,7 @@ subprojects {
 project(':clojuresque-base') {
     description = "A Clojure plugin for gradle (base)"
 
-    apply {
-        plugin 'groovy'
-    }
+    apply plugin: 'groovy'
 
     dependencies {
         compile gradleApi()
@@ -44,7 +42,7 @@ project(':clojuresque-base') {
         project.clojuresquePlugins.each { plugin, version ->
             compile "clojuresque:clojuresque-${plugin}:${version}"
         }
-        compile "de.kotka.gradle:gradle-utils:0.2.1"
+        compile "de.kotka.gradle:gradle-utils:0.2.2"
 
         testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
