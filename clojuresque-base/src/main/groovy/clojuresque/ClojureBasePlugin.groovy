@@ -80,8 +80,10 @@ public class ClojureBasePlugin implements Plugin<Project> {
             sourceSet.clojure.srcDir "src/${sourceSet.name}/clojure"
             sourceSet.allSource.source(clojureSourceSet.clojure)
 
-            sourceSet.delayedAotCompile       = { project.clojure.aotCompile }
-            sourceSet.delayedWarnOnReflection = { project.clojure.warnOnReflection }
+            sourceSet.clojure.delayedAotCompile =
+                { project.clojure.aotCompile }
+            sourceSet.clojure.delayedWarnOnReflection =
+                { project.clojure.warnOnReflection }
         }
     }
 
@@ -91,8 +93,8 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 return
             def compileTaskName = set.getCompileTaskName("clojure")
             def task = project.task(compileTaskName, type: ClojureCompile) {
-                delayedAotCompile       = { set.aotCompile }
-                delayedWarnOnReflection = { set.warnOnReflection }
+                delayedAotCompile       = { set.clojure.aotCompile }
+                delayedWarnOnReflection = { set.clojure.warnOnReflection }
                 delayedDestinationDir   = { set.output.classesDir }
                 srcDir { set.clojure.srcDirs }
                 delayedClasspath = {

@@ -28,21 +28,7 @@ import kotka.gradle.utils.tasks.GenericSourceSet
 
 @GenericSourceSet(sourceName="clojure", sourcePatterns=["**/*.clj"])
 class ClojureSourceSet {
-    @Delayed
-    def aotCompile = false
-
-    @Delayed
-    def warnOnReflection = false
-
-    public void clojureIncludeNamespace(String pattern) {
-        clojure.include(
-            pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj"
-        )
-    }
-
-    public void clojureExcludeNamespace(String pattern) {
-        clojure.exclude(
-            pattern.replaceAll("-", "_").replaceAll("\\.", "/") + ".clj"
-        )
+    def protected initSourceSet(displayString, fileResolver) {
+        new ClojureSourceDirectorySet(displayString, fileResolver)
     }
 }
