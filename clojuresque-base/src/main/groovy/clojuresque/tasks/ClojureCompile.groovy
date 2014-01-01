@@ -85,7 +85,10 @@ class ClojureCompile extends ClojureSourceTask {
             if (it.file.path.endsWith(".clj"))
                 outOfDateInputs << it.file
         }
-        inputs.removed   { deleteDerivedFiles(it.file) }
+        inputs.removed {
+            if (it.file.path.endsWith(".clj"))
+                deleteDerivedFiles(it.file)
+        }
 
         def toCompile = findDependentFiles(outOfDateInputs, dependencyGraph)
 
@@ -123,18 +126,16 @@ class ClojureCompile extends ClojureSourceTask {
         }
     }
 
-    public findDependentFiles(outOfDateFiles, dependencyGraph) {
+    def findDependentFiles(outOfDateFiles, dependencyGraph) {
         def toCompile = [] as Set
         outOfDateFiles.each {
-            toCompile.add(it)
-            def dependents = dependencyGraph[it]
-            if (dependents)
-                toCompile.addAll(dependents)
+            toCompile << it
+            dependencyGraph[it].each { dep -> toCompile << dep }
         }
         toCompile
     }
 
-    public deleteDerivedFiles(parent) {
+    def deleteDerivedFiles(parent) {
         def relativeParent = getSrcDirs().findResult {
             Util.relativizePath(it, parent)
         }
