@@ -11,7 +11,7 @@ buildscript {
 
 subprojects {
     group = 'clojuresque'
-    version = '1.7.0'
+    version = '1.8.0-SNAPSHOT'
 
     ext.kotka = [
         repository:     "clojuresque/base",
