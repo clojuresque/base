@@ -28,11 +28,14 @@ import clojuresque.Util
 import kotka.gradle.utils.ConfigureUtil
 import kotka.gradle.utils.Delayed
 
+import clojure.lang.RT
+
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 class ClojureCompile extends ClojureSourceTask {
     @OutputDirectory
@@ -58,17 +61,38 @@ class ClojureCompile extends ClojureSourceTask {
     def jvmOptions = {}
 
     @TaskAction
-    void compile() {
+    void compile(IncrementalTaskInputs inputs) {
         def destDir = getDestinationDir()
         if (destDir == null) {
             throw new StopExecutionException("destinationDir not set!")
         }
         destDir.mkdirs()
 
+        def final require = RT.var("clojure.core", "require")
+        def final symbol  = RT.var("clojure.core", "symbol")
+
+        require.invoke(symbol.invoke("clojuresque.tasks.clojure-compile-util"))
+
+        def final fileDependencies = RT.var(
+            "clojuresque.tasks.clojure-compile-util",
+            "file-dependencies"
+        )
+
+        def dependencyGraph = fileDependencies.invoke(source.files)
+
+        def outOfDateInputs = [] as Set
+        inputs.outOfDate {
+            if (it.file.path.endsWith(".clj"))
+                outOfDateInputs << it.file
+        }
+        inputs.removed   { deleteDerivedFiles(it.file) }
+
+        def toCompile = findDependentFiles(outOfDateInputs, dependencyGraph)
+
         def options = [
             compileMode:      (getAotCompile()) ? "compile" : "require",
             warnOnReflection: (getWarnOnReflection()),
-            sourceFiles:      source.files.collect { it.path }
+            sourceFiles:      toCompile.collect { it.path }
         ]
 
         project.clojureexec {
@@ -88,9 +112,39 @@ class ClojureCompile extends ClojureSourceTask {
                 dirMode  = this.dirMode
                 fileMode = this.fileMode
 
-                from srcDirs
+                from(srcDirs) {
+                    include {
+                        def f = it.file
+                        f.isDirectory() || outOfDateInputs.contains(f)
+                    }
+                }
                 into destDir
             }
+        }
+    }
+
+    public findDependentFiles(outOfDateFiles, dependencyGraph) {
+        def toCompile = [] as Set
+        outOfDateFiles.each {
+            toCompile.add(it)
+            def dependents = dependencyGraph[it]
+            if (dependents)
+                toCompile.addAll(dependents)
+        }
+        toCompile
+    }
+
+    public deleteDerivedFiles(parent) {
+        def relativeParent = getSrcDirs().findResult {
+            Util.relativizePath(it, parent)
+        }
+        if (relativeParent == null)
+            return
+
+        def pattern = relativeParent.replaceAll("\\.clj\$", "") + "*"
+
+        project.fileTree(getDestinationDir()).include(pattern).files.each {
+            it.delete()
         }
     }
 }

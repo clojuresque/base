@@ -43,6 +43,8 @@ project(':clojuresque-base') {
             compile "clojuresque:clojuresque-${plugin}:${version}"
         }
         compile "de.kotka.gradle:gradle-utils:0.2.2"
+        compile "org.clojure:clojure:1.5.1"
+        compile "org.clojure:tools.namespace:0.2.4"
 
         testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
