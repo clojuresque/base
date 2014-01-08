@@ -110,9 +110,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
     }
 
     private void configureDocs(project) {
-        project.sourceSets.all { set ->
-            if (set.equals(project.sourceSets.test))
-                return
+        project.sourceSets.main { set ->
             def compileTaskName = set.getCompileTaskName("clojure")
             def docTaskName = set.getTaskName(null, "clojuredoc")
             def compileTask = project.tasks[compileTaskName]
@@ -124,7 +122,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
                 delayedJvmOptions = { compileTask.jvmOptions }
                 delayedClasspath = { compileTask.classpath }
                 description =
-                    "Generate documentation for the ${set.name} Clojure source."
+                    "Generate documentation for the Clojure source."
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
             }
         }
