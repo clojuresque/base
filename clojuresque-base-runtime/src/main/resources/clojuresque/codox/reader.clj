@@ -33,16 +33,13 @@
 
 (defn- read-ns [namespace]
   (when namespace
-    (try
-      (require namespace)
-      (-> (find-ns namespace)
-          (meta)
-          (assoc :name namespace)
-          (assoc :publics (read-publics namespace))
-          (update-in [:doc] correct-indent)
-          (list))
-      (catch Exception e
-        (println "Could not generate documentation for" namespace)))))
+    (require namespace)
+    (-> (find-ns namespace)
+      (meta)
+      (assoc :name namespace)
+      (assoc :publics (read-publics namespace))
+      (update-in [:doc] correct-indent)
+      (list))))
 
 (defn read-namespaces
   "Read namespaces from a source directory (defaults to \"src\"), and
