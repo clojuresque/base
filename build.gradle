@@ -1,27 +1,22 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "http://clojars.org/repo" }
-    }
-
-    dependencies {
-        classpath "de.kotka.gradle:gradle-plugin:1.2.0"
-    }
+plugins {
+    id "com.jfrog.bintray" version "1.4"
+    id "com.gradle.plugin-publish" version "0.9.1"
+    id "de.kotka.project" version "1.5.1"
 }
+
+apply plugin: 'java'
+apply plugin: 'groovy'
 
 group = 'clojuresque'
 version = '1.8.0-SNAPSHOT'
 description = "A Clojure plugin for gradle (base)"
 
-
-ext.kotka = [
-    repository:     "clojuresque/base",
-    wrapperVersion: "1.10"
-]
-
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'kotka'
+kotka {
+    wrapperVersion = "1.10"
+    licenses   = [ "MIT" ]
+    repository = "clojuresque/base"
+    bintray    = [ repo: "clojuresque" ]
+}
 
 repositories {
     mavenCentral()
@@ -62,8 +57,4 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         expand("version": project.version)
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = "1.10"
 }
