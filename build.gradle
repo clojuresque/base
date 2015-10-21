@@ -12,7 +12,7 @@ version = '1.8.0-SNAPSHOT'
 description = "A Clojure plugin for gradle (base)"
 
 kotka {
-    wrapperVersion = "1.10"
+    wrapperVersion = "2.7"
     licenses   = [ "MIT" ]
     repository = "clojuresque/base"
     bintray    = [ repo: "clojuresque" ]
