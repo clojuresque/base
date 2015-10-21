@@ -1,6 +1,6 @@
-(ns clojuresque.tasks.compile
-  (:use
-    [clojuresque.util :only (deftask namespaces)]))
+(ns clojuresque.tasks.compile)
+
+(refer 'clojuresque.util :only '[deftask namespaces])
 
 (deftask main
   [{:keys [compile-mode warn-on-reflection source-files]}]

@@ -69,6 +69,12 @@ class ClojureTest extends ClojureSourceTask {
             junitOutputDir: junitDir?.path,
         ]
 
+        def runtime = [
+            "clojuresque/util.clj",
+            "clojuresque/tasks/test_junit.clj",
+            "clojuresque/tasks/test.clj"
+        ].collect { owner.class.classLoader.getResourceAsStream(it) }
+
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             classpath = project.files(
@@ -76,8 +82,11 @@ class ClojureTest extends ClojureSourceTask {
                 this.classesDir,
                 this.classpath
             )
-            main = "clojuresque.tasks.test/main"
-            standardInput = Util.optionsToStream(options)
+            standardInput = Util.toInputStream([
+                runtime,
+                "(clojuresque.tasks.test/main)",
+                Util.optionsToStream(options)
+            ])
         }
     }
 }

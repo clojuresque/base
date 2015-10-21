@@ -1,10 +1,11 @@
 (ns clojuresque.codox.reader
   "Read raw documentation information from Clojure source directory."
-  (:use [clojuresque.codox.utils :only (unindent)])
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
-            [clojuresque.util :as util])
+            [clojure.string :as str])
   (:import java.util.jar.JarFile))
+
+(refer 'clojuresque.codox.utils :only '[unindent])
+(alias 'util 'clojuresque.util)
 
 (defn- correct-indent [text]
   (if text

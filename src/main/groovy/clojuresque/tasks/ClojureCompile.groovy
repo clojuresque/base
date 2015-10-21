@@ -98,6 +98,11 @@ class ClojureCompile extends ClojureSourceTask {
             sourceFiles:      toCompile.collect { it.path }
         ]
 
+        def runtime = [
+            "clojuresque/util.clj",
+            "clojuresque/tasks/compile.clj"
+        ].collect { owner.class.classLoader.getResourceAsStream it }
+
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
             systemProperties "clojure.compile.path": destDir.path
@@ -106,8 +111,11 @@ class ClojureCompile extends ClojureSourceTask {
                 destDir,
                 this.classpath
             )
-            main = "clojuresque.tasks.compile/main"
-            standardInput = Util.optionsToStream(options)
+            standardInput = Util.toInputStream([
+                runtime,
+                "(clojuresque.tasks.compile/main)",
+                Util.optionsToStream(options)
+            ])
         }
 
         if (!getAotCompile()) {

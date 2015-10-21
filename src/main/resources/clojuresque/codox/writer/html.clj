@@ -1,9 +1,12 @@
 (ns clojuresque.codox.writer.html
   "Documentation writer that outputs HTML."
-  (:use [clojuresque.hiccup core page element])
   (:import java.net.URLEncoder)
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
+
+(refer 'clojuresque.hiccup.core)
+(refer 'clojuresque.hiccup.page)
+(refer 'clojuresque.hiccup.element)
 
 (defn- ns-filename [namespace]
   (str (:name namespace) ".html"))
@@ -137,10 +140,10 @@
   "Take raw documentation info and turn it into formatted HTML."
   [project]
   (doto (:output-dir project "doc")
-    (mkdirs "css" "js")
-    (copy-resource "clojuresque/codox/css/default.css" "css/default.css")
-    (copy-resource "clojuresque/codox/js/jquery.min.js" "js/jquery.min.js")
-    (copy-resource "clojuresque/codox/js/page_effects.js" "js/page_effects.js")
+    #_(mkdirs "css" "js")
+    #_(copy-resource "clojuresque/codox/css/default.css" "css/default.css")
+    #_(copy-resource "clojuresque/codox/js/jquery.min.js" "js/jquery.min.js")
+    #_(copy-resource "clojuresque/codox/js/page_effects.js" "js/page_effects.js")
     (write-index project)
     (write-namespaces project))
   nil)

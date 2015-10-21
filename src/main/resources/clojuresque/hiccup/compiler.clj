@@ -1,7 +1,8 @@
 (ns clojuresque.hiccup.compiler
   "Internal functions for compilation."
-  (:use clojuresque.hiccup.util)
   (:import [clojure.lang IPersistentVector ISeq]))
+
+(refer 'clojuresque.hiccup.util)
 
 (def ^:dynamic *html-mode* :xml)
 

@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'groovy'
 
-group = 'clojuresque'
+group = 'de.kotka.clojuresque'
 version = '1.8.0-SNAPSHOT'
 description = "A Clojure plugin for gradle (base)"
 
@@ -50,11 +50,4 @@ compileJava {
 compileGroovy {
     sourceCompatibility = "1.6"
     targetCompatibility = "1.6"
-}
-
-processResources {
-    inputs.property "version", {-> project.version}
-    from(sourceSets.main.resources.srcDirs) {
-        expand("version": project.version)
-    }
 }

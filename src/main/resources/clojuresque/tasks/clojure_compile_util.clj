@@ -1,8 +1,8 @@
 (ns clojuresque.tasks.clojure-compile-util
   (:require
-    [clojure.tools.namespace.dependency :as deps]
-    [clojure.tools.namespace.file       :as file]
-    [clojure.tools.namespace.track      :as track]))
+   [clojure.tools.namespace.dependency :as deps]
+   [clojure.tools.namespace.file       :as file]
+   [clojure.tools.namespace.track      :as track]))
 
 (defn invert-map
   [m]

@@ -1,7 +1,8 @@
 (ns clojuresque.hiccup.element
-  "Functions for creating HTML elements."
-  (:use clojuresque.hiccup.def
-        clojuresque.hiccup.util))
+  "Functions for creating HTML elements.")
+
+(refer 'clojuresque.hiccup.def)
+(refer 'clojuresque.hiccup.util)
 
 (defn javascript-tag
   "Wrap the supplied javascript up in script tags and a CDATA section."

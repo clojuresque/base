@@ -40,7 +40,7 @@ public class ClojureBasePlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.apply plugin: "java"
-        project.apply plugin: "clojure-common"
+        project.apply plugin: "de.kotka.clojuresque.common"
 
         project.convention.plugins.clojureDeprecated =
             new ClojurePluginDeprecatedConvention(project)
@@ -51,22 +51,11 @@ public class ClojureBasePlugin implements Plugin<Project> {
         repos.convention.plugins.clojure =
             new ClojureRepositoryConvention(repos)
 
-        configureRuntime(project)
         configureSourceSets(project)
         configureCompilation(project)
         configureDocs(project)
         configureTests(project)
         configureClojarsUpload(project)
-    }
-
-    private void configureRuntime(project) {
-        def props = Util.properties("base")
-
-        project.dependencies {
-            clojuresque group: "clojuresque",
-                name: "clojuresque-base-runtime",
-                version: props.getProperty("clojuresque.base.version")
-        }
     }
 
     private void configureSourceSets(project) {

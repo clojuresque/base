@@ -1,7 +1,8 @@
 (ns clojuresque.hiccup.page
-  "Functions for setting up HTML pages."
-  (:use clojuresque.hiccup.core 
-        clojuresque.hiccup.util))
+  "Functions for setting up HTML pages.")
+
+(refer 'clojuresque.hiccup.core)
+(refer 'clojuresque.hiccup.util)
 
 (def doctype
   {:html4

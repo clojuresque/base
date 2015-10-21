@@ -1,9 +1,9 @@
 (ns clojuresque.tasks.test-junit
   (:use
     [clojure.test :only (run-tests report successful? *test-out*) :as t]
-    [clojure.test.junit :only (junit-report with-junit-output) :as j]
-    [clojuresque.util :only (namespaces)]))
+    [clojure.test.junit :only (junit-report with-junit-output) :as j]))
 
+(refer 'clojuresque.util :only '[namespaces])
 
 (def escape-xml-map
   (zipmap "'<>\"&" (map #(str \& % \;) '[apos lt gt quot amp])))

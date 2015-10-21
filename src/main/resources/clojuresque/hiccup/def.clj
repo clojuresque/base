@@ -1,6 +1,7 @@
 (ns clojuresque.hiccup.def
-  "Macros for defining functions that generate HTML"
-  (:use clojuresque.hiccup.core))
+  "Macros for defining functions that generate HTML")
+
+(refer 'clojuresque.hiccup.core)
 
 (defmacro defhtml
   "Define a function, but wrap its output in an implicit html macro."

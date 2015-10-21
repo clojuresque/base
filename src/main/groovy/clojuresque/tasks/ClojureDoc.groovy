@@ -71,6 +71,20 @@ class ClojureDoc extends ClojureSourceTask {
             sourceFiles:     source*.path
         ]
 
+        def runtime = [
+            "clojuresque/util.clj",
+            "clojuresque/hiccup/util.clj",
+            "clojuresque/hiccup/compiler.clj",
+            "clojuresque/hiccup/core.clj",
+            "clojuresque/hiccup/def.clj",
+            "clojuresque/hiccup/element.clj",
+            "clojuresque/hiccup/page.clj",
+            "clojuresque/codox/utils.clj",
+            "clojuresque/codox/reader.clj",
+            "clojuresque/codox/main.clj",
+            "clojuresque/codox/writer/html.clj",
+            "clojuresque/tasks/doc.clj"
+        ].collect { owner.class.classLoader.getResourceAsStream it }
 
         project.clojureexec {
             ConfigureUtil.configure delegate, this.jvmOptions
@@ -78,8 +92,29 @@ class ClojureDoc extends ClojureSourceTask {
                 this.srcDirs,
                 this.classpath
             )
-            main = "clojuresque.tasks.doc/main"
-            standardInput = Util.optionsToStream(options)
+            standardInput = Util.toInputStream([
+                runtime,
+                "(clojuresque.tasks.doc/main)",
+                Util.optionsToStream(options)
+            ])
+        }
+
+        [
+            "css/default.css",
+            "js/page_effects.js",
+            "js/jquery.min.js"
+        ].each { f ->
+            def dest = project.file("${destinationDir}/${f}")
+            println "${f}"
+            if (!dest.exists()) {
+                dest.parentFile.mkdirs()
+                dest.withOutputStream { output ->
+                    def input = this.class.classLoader.
+                        getResourceAsStream("clojuresque/codox/${f}")
+                    output << input
+                    input.close()
+                }
+            }
         }
     }
 

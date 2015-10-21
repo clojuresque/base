@@ -1,9 +1,9 @@
 (ns clojuresque.tasks.test
-  (:require
-    [clojuresque.tasks.test-junit :as test-junit])
   (:use
-    [clojuresque.util :only (deftask namespaces)]
     [clojure.test :only (run-tests) :as t]))
+
+(alias 'test-junit 'clojuresque.tasks.test-junit)
+(refer 'clojuresque.util :only '[deftask namespaces])
 
 (defn check-result
   [result]

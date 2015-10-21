@@ -1,7 +1,7 @@
-(ns clojuresque.tasks.doc
-  (:use
-    [clojuresque.util :only (deftask)]
-    [clojuresque.codox.main :only (generate-docs)]))
+(ns clojuresque.tasks.doc)
+
+(refer 'clojuresque.util :only '[deftask])
+(refer 'clojuresque.codox.main :only '[generate-docs])
 
 (deftask main
   [{:keys [project codox destination-dir source-dirs source-files]}]

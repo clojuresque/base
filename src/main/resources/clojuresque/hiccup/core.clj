@@ -1,8 +1,9 @@
 (ns clojuresque.hiccup.core
   "Library for rendering a tree of vectors into a string of HTML.
-  Pre-compiles where possible for performance."
-  (:use clojuresque.hiccup.compiler
-        clojuresque.hiccup.util))
+  Pre-compiles where possible for performance.")
+
+(refer 'clojuresque.hiccup.compiler)
+(refer 'clojuresque.hiccup.util)
 
 (defmacro html
   "Render Clojure data structures to a string of HTML."
