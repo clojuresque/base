@@ -8,7 +8,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 group = 'de.kotka.clojuresque'
-version = '1.8.0-SNAPSHOT'
+version = '2.0.0'
 description = "A Clojure plugin for gradle (base)"
 
 kotka {
